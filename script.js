@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Select elements
+   // Select elements
     const startBtn = document.getElementById('startBtn');
     const loginBtn = document.getElementById('loginBtn');
     const navLinks = document.querySelectorAll('.nav-links a');
