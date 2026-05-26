@@ -1,235 +1,306 @@
-/* --- Base Styles & Variables --- */
+/* Base Styles & Variables */
 :root {
-    --brand-color: #D4F751; /* Lime color */
-    --text-light: #ffffff;
-    --text-muted: #d1d1d1;
-    --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --bg-dark: #111111;
+    --modal-bg: #181818;
+    --input-bg: #222222;
+    --border-color: #333333;
+    --accent: #cbf122; /* Neon Lime Green */
+    --accent-hover: #bde020;
+    --text-main: #ffffff;
+    --text-muted: #999999;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body, html {
-    width: 100%;
-    height: 100%;
-    font-family: var(--font-main);
-    background-color: #050505; /* Fallback and base dark color */
-    background-image: url("HomePage_Background.png");
-    background-size: cover;
-    background-position: center;
+body {
+    background-color: var(--bg-dark);
+    /* Adds a slight dark overlay so the form stands out, and maps the background image */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("Singin_BG.png");
     background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
     background-attachment: fixed;
-    color: var(--text-light);
-    overflow-x: hidden;
-    min-height: 100vh;
-}
-
-/* --- Background & Overlay --- */
-.background-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -9999;
-}
-
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Overlay disabled to show background image */
-    background: none;
-}
-
-.content-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    min-height: 100vh;
+    
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-main);
 }
 
-/* --- Header / Navbar --- */
-.navbar {
+/* Modal Container */
+.auth-modal {
+    background-color: var(--modal-bg);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Header & Logo Styles */
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 1rem;
-    margin-bottom: 6rem;
+    margin-bottom: 24px;
 }
 
-/* Updated consolidated logo container styles */
-.logo {
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-grow: 1;
+    gap: 10px; 
+}
+
+.logo-icon {
+    max-height: 28px; 
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.5px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between icon and text */
-}
-
-/* Style for the logo icon image */
-.logo .logo-icon {
-    height: 45px; /* Adjust as needed */
-    width: auto;
-    vertical-align: middle;
-}
-
-/* New style for the text "TasteForge" */
-.logo .logo-text {
-    color: var(--text-light); /* White text */
-    font-size: 1.25rem;
-    font-weight: 700;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2.5rem;
-}
-
-.nav-links a {
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    position: relative;
-    padding-bottom: 0.4rem;
-    transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: var(--brand-color);
-}
-
-.nav-links a.active {
-    color: var(--text-light);
-}
-
-.nav-links a.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--brand-color);
-}
-
-.cart-icon {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.cart-icon:hover {
-    transform: scale(1.1);
-}
-
-/* --- Hero Section --- */
-.hero-section {
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    flex-grow: 1;
-    padding-bottom: 4rem;
+    transition: color 0.2s;
 }
 
-.hero-title {
-    font-size: 4.5rem;
-    line-height: 1.1;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-    letter-spacing: -1px;
+.close-btn svg {
+    width: 20px;
+    height: 20px;
 }
 
-.highlight {
-    color: var(--brand-color);
+.close-btn:hover {
+    color: var(--text-main);
 }
 
-.hero-subtitle {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: var(--text-muted);
-    margin-bottom: 3rem;
-    font-weight: 400;
-}
-
-/* --- Buttons --- */
-.cta-group {
+/* Tabs */
+.tab-container {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 380px;
-    margin-bottom: 2rem;
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 24px;
 }
 
-.btn {
-    padding: 1.1rem 2rem;
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 10px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    background-color: transparent;
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 10px rgba(203, 241, 34, 0.1) inset;
+}
+
+/* Welcome Text */
+.welcome-text {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.welcome-text h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.welcome-text p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 14px 16px;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #666;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: var(--accent);
+}
+
+/* Password Toggle */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+}
+
+.toggle-password svg {
+    width: 18px;
+    height: 18px;
+}
+
+.toggle-password:hover {
+    color: var(--text-main);
+}
+
+/* Form Options (Remember Me / Forgot) */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 13px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.remember-me input {
+    margin-right: 8px;
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: var(--text-main);
+}
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    background-color: var(--accent);
+    color: #000;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
     text-align: center;
-    transition: all 0.3s ease;
-    font-family: inherit;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 13px;
 }
 
-.primary-btn {
-    background-color: var(--brand-color);
-    color: #000000;
-    border: none;
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.primary-btn:hover {
-    background-color: #bce13d;
-    transform: translateY(-2px);
+.divider span {
+    padding: 0 10px;
 }
 
-.secondary-btn {
-    background-color: rgba(0, 0, 0, 0.4);
-    color: var(--text-light);
-    border: 1px solid var(--brand-color);
-    backdrop-filter: blur(4px);
-}
-
-.secondary-btn:hover {
-    background-color: rgba(212, 247, 81, 0.1);
-}
-
-/* FIX: Centered Owner Link */
-.owner-link {
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 0.9rem;
+/* Secondary Button */
+.btn-secondary {
+    width: 100%;
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 500;
-    display: block; 
-    text-align: center; /* Centers text perfectly under the buttons */
-    margin-top: 0.5rem; /* Slight space above */
-    transition: color 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
 }
 
-.owner-link:hover {
-    color: var(--brand-color);
+.btn-secondary:hover {
+    background-color: var(--input-bg);
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
-    .hero-title {
-        font-size: 3rem;
-    }
-    .background-container {
-        background-position: center;
-    }
-    .overlay {
-        background: rgba(10, 10, 10, 0.85);
-    }
+.btn-secondary svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Footer */
+.modal-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.modal-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.modal-footer a:hover {
+    text-decoration: underline;
 }
