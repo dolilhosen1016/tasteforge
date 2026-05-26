@@ -19,8 +19,7 @@
 
 body {
     background-color: var(--bg-dark);
-    /* Adds a slight dark overlay so the form stands out, and maps the background image */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("Singin_BG.png");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Signin_BG.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -49,7 +48,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .logo-container {
@@ -91,59 +90,45 @@ body {
     color: var(--text-main);
 }
 
-/* Tabs */
-.tab-container {
-    display: flex;
-    background-color: var(--input-bg);
-    border-radius: 8px;
-    padding: 4px;
-    margin-bottom: 24px;
-}
-
-.tab-btn {
-    flex: 1;
-    background: none;
-    border: 1px solid transparent;
-    color: var(--text-muted);
-    padding: 10px 0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.tab-btn.active {
-    background-color: transparent;
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 10px rgba(203, 241, 34, 0.1) inset;
-}
-
-/* Welcome Text */
+/* Welcome Text & Lock Icon */
 .welcome-text {
     text-align: center;
     margin-bottom: 24px;
 }
 
+.lock-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.lock-icon svg {
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+    background-color: rgba(203, 241, 34, 0.1); /* Subtle accent background */
+    border-radius: 50%;
+}
+
 .welcome-text h2 {
     font-size: 22px;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
 }
 
 .welcome-text p {
     color: var(--text-muted);
     font-size: 14px;
+    line-height: 1.5;
+    padding: 0 10px;
 }
 
 /* Inputs */
 .input-group {
-    margin-bottom: 16px;
-    position: relative;
+    margin-bottom: 24px;
 }
 
-input[type="email"],
-input[type="password"] {
+input[type="email"] {
     width: 100%;
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
@@ -155,73 +140,11 @@ input[type="password"] {
     transition: border-color 0.2s;
 }
 
-input[type="email"]::placeholder,
-input[type="password"]::placeholder {
-    color: #666;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="email"]:focus {
     border-color: var(--accent);
 }
 
-/* Password Toggle */
-.toggle-password {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-}
-
-.toggle-password svg {
-    width: 18px;
-    height: 18px;
-}
-
-.toggle-password:hover {
-    color: var(--text-main);
-}
-
-/* Form Options (Remember Me / Forgot) */
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    font-size: 13px;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-
-.remember-me input {
-    margin-right: 8px;
-    accent-color: var(--accent);
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.forgot-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.forgot-link:hover {
-    color: var(--text-main);
-}
-
-/* Buttons */
+/* Button */
 .btn-primary {
     width: 100%;
     background-color: var(--accent);
@@ -239,68 +162,54 @@ input[type="password"]:focus {
     background-color: var(--accent-hover);
 }
 
-/* Divider */
-.divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-    color: var(--text-muted);
-    font-size: 13px;
+.btn-primary:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
 
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.divider span {
-    padding: 0 10px;
-}
-
-/* Secondary Button */
-.btn-secondary {
-    width: 100%;
-    background-color: transparent;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
+/* Success Message */
+.success-message {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: background-color 0.2s;
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.btn-secondary:hover {
-    background-color: var(--input-bg);
-}
-
-.btn-secondary svg {
+.success-message svg {
     width: 18px;
     height: 18px;
 }
 
-/* Footer */
+/* Footer / Back Link */
 .modal-footer {
     text-align: center;
     margin-top: 24px;
-    font-size: 14px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--text-muted);
-}
-
-.modal-footer a {
-    color: var(--accent);
     text-decoration: none;
+    font-size: 14px;
     font-weight: 500;
+    transition: color 0.2s;
 }
 
-.modal-footer a:hover {
-    text-decoration: underline;
+.back-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+.back-link:hover {
+    color: var(--text-main);
 }
