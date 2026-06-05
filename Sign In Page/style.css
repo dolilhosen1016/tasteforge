@@ -19,7 +19,7 @@
 
 body {
     background-color: var(--bg-dark);
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Signin_BG.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Singin_BG.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
