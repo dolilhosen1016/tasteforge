@@ -1,9 +1,29 @@
+// Check URL parameter on page load to set correct tab
+function initializeTab() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab') || 'user';
+    switchTab(tab);
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', initializeTab);
+
 // Tab Switching Logic
 function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.getElementById('tab-' + tabId).classList.add('active');
+    
+    // Update Sign Up link based on selected tab
+    const signupLink = document.getElementById('signupLink');
+    if (signupLink) {
+        if (tabId === 'user') {
+            signupLink.href = '../Sign Up Page/User_index.html';
+        } else if (tabId === 'owner') {
+            signupLink.href = '../Sign Up Page/Owner_index.html';
+        }
+    }
 }
 
 // Password Visibility Toggle Logic
