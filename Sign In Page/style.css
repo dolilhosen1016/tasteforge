@@ -19,8 +19,7 @@
 
 body {
     background-color: var(--bg-dark);
-    /* Adds a slight dark overlay so the form stands out, and maps the background image */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("Singin_BG.png");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Signin_BG.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -44,7 +43,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Header & Logo Styles */
+/* Header */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -57,11 +56,6 @@ body {
     justify-content: center;
     align-items: center; 
     flex-grow: 1;
-    gap: 10px; 
-}
-
-.logo-icon {
-    max-height: 28px; 
 }
 
 .brand-name {
@@ -82,14 +76,8 @@ body {
     transition: color 0.2s;
 }
 
-.close-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.close-btn:hover {
-    color: var(--text-main);
-}
+.close-btn svg { width: 20px; height: 20px; }
+.close-btn:hover { color: var(--text-main); }
 
 /* Tabs */
 .tab-container {
@@ -125,25 +113,13 @@ body {
     margin-bottom: 24px;
 }
 
-.welcome-text h2 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.welcome-text p {
-    color: var(--text-muted);
-    font-size: 14px;
-}
+.welcome-text h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.welcome-text p { color: var(--text-muted); font-size: 14px; }
 
 /* Inputs */
-.input-group {
-    margin-bottom: 16px;
-    position: relative;
-}
+.input-group { margin-bottom: 16px; position: relative; }
 
-input[type="email"],
-input[type="password"] {
+input[type="email"], input[type="password"] {
     width: 100%;
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
@@ -155,152 +131,59 @@ input[type="password"] {
     transition: border-color 0.2s;
 }
 
-input[type="email"]::placeholder,
-input[type="password"]::placeholder {
-    color: #666;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="email"]:focus, input[type="password"]:focus {
     border-color: var(--accent);
 }
 
 /* Password Toggle */
 .toggle-password {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex;
 }
+.toggle-password svg { width: 18px; height: 18px; }
+.toggle-password:hover { color: var(--text-main); }
 
-.toggle-password svg {
-    width: 18px;
-    height: 18px;
-}
-
-.toggle-password:hover {
-    color: var(--text-main);
-}
-
-/* Form Options (Remember Me / Forgot) */
+/* Form Options */
 .form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; font-size: 13px;
 }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    color: var(--text-muted);
-    cursor: pointer;
-}
+.remember-me { display: flex; align-items: center; color: var(--text-muted); cursor: pointer; }
+.remember-me input { margin-right: 8px; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
 
-.remember-me input {
-    margin-right: 8px;
-    accent-color: var(--accent);
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.forgot-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.forgot-link:hover {
-    color: var(--text-main);
-}
+.forgot-link { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.forgot-link:hover { color: var(--text-main); }
 
 /* Buttons */
 .btn-primary {
-    width: 100%;
-    background-color: var(--accent);
-    color: #000;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    width: 100%; background-color: var(--accent); color: #000; border: none;
+    padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;
 }
+.btn-primary:hover { background-color: var(--accent-hover); }
 
-.btn-primary:hover {
-    background-color: var(--accent-hover);
-}
-
-/* Divider */
+/* Missing Element Styles Added Below */
 .divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-    color: var(--text-muted);
-    font-size: 13px;
+    display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 13px;
 }
-
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color);
+.divider::before, .divider::after {
+    content: ''; flex: 1; border-bottom: 1px solid var(--border-color);
 }
+.divider span { padding: 0 10px; }
 
-.divider span {
-    padding: 0 10px;
-}
-
-/* Secondary Button */
 .btn-secondary {
-    width: 100%;
-    background-color: transparent;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background-color 0.2s;
+    width: 100%; background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color);
+    padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.2s;
 }
+.btn-secondary:hover { background-color: var(--input-bg); }
+.btn-secondary svg { width: 18px; height: 18px; }
 
-.btn-secondary:hover {
-    background-color: var(--input-bg);
-}
+/* Footer Links */
+.modal-footer { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-muted); }
 
-.btn-secondary svg {
-    width: 18px;
-    height: 18px;
-}
+.signup-link { color: var(--accent); text-decoration: none; font-weight: 500; }
+.signup-link:hover { text-decoration: underline; }
 
-/* Footer */
-.modal-footer {
-    text-align: center;
-    margin-top: 24px;
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-.modal-footer a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.modal-footer a:hover {
-    text-decoration: underline;
-}
+.back-link { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.back-link:hover { color: var(--text-main); }
