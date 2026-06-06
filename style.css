@@ -218,6 +218,54 @@ body, html {
     color: var(--brand-color);
 }
 
+/* Stats Container Styles */
+.stats-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(20, 20, 20, 0.7); /* Dark semi-transparent background */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px 40px;
+    margin-top: 40px;
+    max-width: 900px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-text h3 {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stat-text p {
+    color: #a0a0a0;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.divider {
+    width: 1px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
     .nav-links {
