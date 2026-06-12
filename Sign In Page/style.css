@@ -119,7 +119,7 @@ body {
 /* Inputs */
 .input-group { margin-bottom: 16px; position: relative; }
 
-input[type="email"], input[type="password"] {
+input[type="email"], input[type="password"], .password-group input[type="text"] {
     width: 100%;
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
@@ -131,7 +131,7 @@ input[type="email"], input[type="password"] {
     transition: border-color 0.2s;
 }
 
-input[type="email"]:focus, input[type="password"]:focus {
+input[type="email"]:focus, input[type="password"]:focus, .password-group input[type="text"]:focus {
     border-color: var(--accent);
 }
 

@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('loginBtn');
     const navLinks = document.querySelectorAll('.nav-links a');
 
-    // Add interactivity to the Primary Button
-    startBtn.addEventListener('click', () => {
-        console.log('Guest building process initiated...');
-        // In a real app, this would route to the builder page
-    });
+    // Add interactivity to the Primary Button - navigate to Menu Page
+    if (startBtn && startBtn.tagName !== 'A') {
+        startBtn.addEventListener('click', () => {
+            window.location.href = 'Menu Page/index.html';
+        });
+    }
 
     // Add interactivity to the Secondary Button
     loginBtn.addEventListener('click', () => {
