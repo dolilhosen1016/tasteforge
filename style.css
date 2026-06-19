@@ -329,3 +329,26 @@ body, html {
         background: rgba(10, 10, 10, 0.85);
     }
 }
+
+
+
+
+/* =========================================
+   CUSTOM SCROLLBAR (PREMIUM LOOK)
+   ========================================= */
+::-webkit-scrollbar {
+    width: 8px; /* স্ক্রলবার কতটা চিকন হবে */
+}
+
+::-webkit-scrollbar-track {
+    background: #050505; /* পেছনের ডার্ক কালার */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--brand-color); /* তোমার নিওন গ্রিন কালার */
+    border-radius: 10px; /* মাথাগুলো গোল করার জন্য */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #bce13d; /* মাউস নিলে একটু উজ্জ্বল হবে */
+}
