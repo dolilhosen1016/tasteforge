@@ -11,7 +11,7 @@
         <header>
             <div class="top-bar">
                 <div class="left-action-group">
-                    <button class="icon-btn back-btn" onclick="window.history.back()" title="Go Back">
+                    <button class="icon-btn back-btn" onclick="window.location.href='../index.html'" title="Go Back">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="19" y1="12" x2="5" y2="12"></line>
                             <polyline points="12 19 5 12 12 5"></polyline>
@@ -44,14 +44,14 @@
         </nav>
 
         <main class="menu-grid" id="menuGrid">
-            </main>
+        </main>
     </div>
 
     <div id="mealModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeMealModal">&times;</span>
             <div id="mealModalBody" style="text-align: center; margin-top: 10px;">
-                </div>
+            </div>
         </div>
     </div>
     
@@ -59,7 +59,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Your Cart 🛒</h2>
-                <span class="close-modal">&times;</span>
+                <span class="close-modal" id="closeCartModal">&times;</span>
             </div>
             <div class="modal-body" id="cartItemsContainer">
                 <p class="empty-cart-msg">Your cart is empty.</p>

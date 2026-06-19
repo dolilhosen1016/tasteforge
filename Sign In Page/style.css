@@ -49,13 +49,31 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    position: relative;
 }
 
-.logo-container {
+.back-btn-top {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    position: absolute;
+    left: 0;
+}
+
+.back-btn-top svg { width: 20px; height: 20px; }
+.back-btn-top:hover { color: var(--text-main); }
+
+.logo-container, .logo-container-center {
     display: flex;
     justify-content: center;
     align-items: center; 
     flex-grow: 1;
+    gap: 10px;
 }
 
 .brand-name {
