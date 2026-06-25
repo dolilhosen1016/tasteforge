@@ -78,7 +78,7 @@ if (searchInput) {
 // --- CART FUNCTIONALITY ---
 const cartModal = document.getElementById('cartModal');
 const topCartBtn = document.getElementById('topCartBtn');
-const closeModalBtn = document.getElementById('closeCartModal'); // FIXED HERE
+const closeModalBtn = document.getElementById('closeCartModal'); 
 const cartItemsContainer = document.getElementById('cartItemsContainer');
 const cartTotalEl = document.getElementById('cartTotal');
 
@@ -185,5 +185,30 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Initialize by fetching JSON
-document.addEventListener('DOMContentLoaded', loadData);
+// Initialize JSON Data
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+
+    // =========================================
+    // ✅ 100% FOOLPROOF DYNAMIC BACK BUTTON
+    // =========================================
+    const backBtn = document.getElementById('dynamicBackBtn');
+    
+    if (backBtn) {
+        backBtn.onclick = function(e) {
+            e.preventDefault(); // ডিফল্ট কাজ বন্ধ করবে
+            
+            // চেক করবে ইউজারের নাম স্টোরেজে আছে কি না
+            const isLoggedIn = localStorage.getItem('registeredUserName');
+            const previousPage = document.referrer || '';
+
+            // যদি সে আগে ড্যাশবোর্ডে থাকে বা লগ-ইন করা থাকে
+            if (isLoggedIn || previousPage.includes('Dashboard')) {
+                window.location.href = '../Dashboard Page/index.html';
+            } else {
+                // অন্যথায় হোম পেজে পাঠাবে
+                window.location.href = '../index.html';
+            }
+        };
+    }
+});
