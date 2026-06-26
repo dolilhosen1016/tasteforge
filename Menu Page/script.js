@@ -211,4 +211,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
+
+    window.openMealModal = function(id) {
+    // এখানে Menue বানানটা ফোল্ডারের নামের সাথে মিলিয়ে দেওয়া হয়েছে
+    window.location.href = `../Menue Details Page/index.html?id=${id}`;
+};
+
+if(confirmOrderBtn) {
+        confirmOrderBtn.addEventListener('click', () => {
+            if(localCart.length === 0) {
+                alert("Please add some meals to your basket first!");
+                return;
+            }
+            
+            confirmOrderBtn.innerText = "Processing...";
+            setTimeout(() => {
+                
+                // ✅ নতুন আপডেট: কার্ট ক্লিয়ার করার আগে অর্ডার হিস্ট্রিতে ডেটা সেভ করা
+                let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
+                
+                localCart.forEach(item => {
+                    orderHistory.push({
+                        id: '#TFP' + Math.floor(1000 + Math.random() * 9000),
+                        date: new Date().toLocaleDateString(),
+                        amount: item.price,
+                        name: item.name
+                    });
+                });
+                localStorage.setItem('tasteForgeOrders', JSON.stringify(orderHistory));
+
+                alert("Order Confirmed Successfully! 🎉 Your loyalty points have been updated.");
+                
+                // এরপর কার্ট ক্লিয়ার করা
+                localCart = []; 
+                localStorage.setItem('tasteForgeCartItems', JSON.stringify(localCart));
+                confirmOrderBtn.innerText = "Confirm Order";
+                if(cartModal) cartModal.classList.remove('show');
+                window.location.href = '../Dashboard Page/index.html'; // অর্ডার শেষে সরাসরি ড্যাশবোর্ডে পাঠিয়ে দাও
+            }, 1000);
+        });
+    }
 });

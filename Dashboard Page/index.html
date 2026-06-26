@@ -19,10 +19,10 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active"><i class="fa-solid fa-house-user"></i> Dashboard</a>
+            <a href="#" class="nav-item active" id="sidebarDashBtn"><i class="fa-solid fa-house-user"></i> Dashboard</a>
             <a href="../Menu Page/index.html" class="nav-item"><i class="fa-solid fa-utensils"></i> Builder</a>
-            <a href="#" class="nav-item"><i class="fa-regular fa-clipboard"></i> Orders</a>
-            <a href="#" class="nav-item"><i class="fa-regular fa-bookmark"></i> Saved Builds</a>
+            <a href="#" class="nav-item" id="sidebarOrdersBtn"><i class="fa-regular fa-clipboard"></i> Orders</a>
+            <a href="#" class="nav-item" id="sidebarSavedBtn"><i class="fa-regular fa-bookmark"></i> Saved Builds</a>
             <a href="#" class="nav-item" id="sidebarRewardsBtn"><i class="fa-solid fa-gift"></i> Rewards</a>
             <a href="#" class="nav-item" id="sidebarSettingsBtn"><i class="fa-solid fa-gear"></i> Settings</a>
         </nav>
@@ -104,7 +104,7 @@
             </div>
         </section>
 
-        <section class="saved-builds-section">
+        <section class="saved-builds-section" id="savedBuildsSection">
             <div class="section-header">
                 <h3>Saved Custom Builds</h3>
                 <a href="../Menu Page/index.html" class="view-all">View All <i class="fa-solid fa-chevron-right"></i></a>
@@ -112,7 +112,7 @@
             <div class="builds-grid" id="savedBuildsContainer"></div>
         </section>
 
-        <section class="recent-orders-section">
+        <section class="recent-orders-section" id="recentOrdersSection">
             <div class="section-header">
                 <h3>Recent Order History</h3>
                 <a href="#" class="view-all" id="orderViewAllBtn">View All <i class="fa-solid fa-chevron-right"></i></a>
@@ -131,7 +131,7 @@
                 <div class="setting-group">
                     <h3>Profile Information</h3>
                     <input type="text" placeholder="Full Name" value="Dolil Hosen" class="setting-input" id="settingsInputName">
-                    <input type="email" placeholder="Email Address" value="dolil@tasteforge.com" class="setting-input">
+                    <input type="email" placeholder="Email Address" value="dolil@tasteforge.com" class="setting-input" id="settingsInputEmail">
                 </div>
                 <div class="setting-group">
                     <h3>Notifications</h3>
