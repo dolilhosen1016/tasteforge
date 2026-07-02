@@ -2,7 +2,8 @@ const grid = document.getElementById('menuGrid');
 const filterBtns = document.querySelectorAll('.filter-btn');
 
 let allMeals = [];
-let cart = [];
+// ✅ কার্ট ইনিশিয়ালাইজ করার সময় লোকাল স্টোরেজ থেকে ডেটা নেবে, যাতে পেমেন্ট পেজে ডেটা যায়
+let cart = JSON.parse(localStorage.getItem('tasteForgeCartItems')) || [];
 
 // Load data from JSON file
 async function loadData() {
@@ -87,6 +88,8 @@ window.addToCart = function(id, event) {
     const meal = allMeals.find(m => m.id === id);
     if (meal) {
         cart.push(meal);
+        // ✅ কার্ট আপডেট হওয়ার সাথে সাথে স্টোরেজও আপডেট হবে
+        localStorage.setItem('tasteForgeCartItems', JSON.stringify(cart));
         
         // Button animation
         const btn = event.target;
@@ -146,26 +149,37 @@ function updateCartUI() {
 // Remove Item from Cart
 window.removeFromCart = function(index) {
     cart.splice(index, 1);
+    // ✅ রিমুভ করার সময়ও স্টোরেজ আপডেট হবে
+    localStorage.setItem('tasteForgeCartItems', JSON.stringify(cart));
     updateCartUI();
 };
 
-// --- MEAL DETAILS POPUP FUNCTIONALITY ---
+// --- MEAL DETAILS POPUP & REDIRECT FUNCTIONALITY ---
 const mealModal = document.getElementById('mealModal');
 const closeMealModal = document.getElementById('closeMealModal');
 const mealModalBody = document.getElementById('mealModalBody');
 
 window.openMealModal = function(id) {
-    const meal = allMeals.find(m => m.id === id);
-    if(meal && mealModalBody) {
-        mealModalBody.innerHTML = `
-            <img src="${meal.imageUrl}" alt="${meal.name}" class="meal-modal-img">
-            <span class="meal-modal-category">${meal.category}</span>
-            <h2 class="meal-modal-title">${meal.name}</h2>
-            <p class="meal-modal-desc">${meal.description}<br><br>🔥 <strong>${meal.calories} Calories</strong></p>
-            <div class="meal-modal-price">$${meal.price.toFixed(2)}</div>
-            <button class="add-btn" onclick="addToCart(${meal.id}, event); setTimeout(() => mealModal.classList.remove('show'), 600);">Add to Cart</button>
-        `;
-        mealModal.classList.add('show');
+    // 🔥 LOGIC: ইউজার লগ-ইন করা আছে কি না চেক করো
+    const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
+
+    if (isLoggedIn) {
+        // লগ-ইন থাকলে সরাসরি Details Page এ চলে যাবে কাস্টমাইজ করার জন্য
+        window.location.href = `../Menue Details Page/index.html?id=${id}`;
+    } else {
+        // লগ-ইন না থাকলে (গেস্ট মোড) শুধু পপ-আপ দেখাবে
+        const meal = allMeals.find(m => m.id === id);
+        if(meal && mealModalBody) {
+            mealModalBody.innerHTML = `
+                <img src="${meal.imageUrl}" alt="${meal.name}" class="meal-modal-img">
+                <span class="meal-modal-category">${meal.category}</span>
+                <h2 class="meal-modal-title">${meal.name}</h2>
+                <p class="meal-modal-desc">${meal.description}<br><br>🔥 <strong>${meal.calories} Calories</strong></p>
+                <div class="meal-modal-price">$${meal.price.toFixed(2)}</div>
+                <button class="add-btn" onclick="addToCart(${meal.id}, event); setTimeout(() => mealModal.classList.remove('show'), 600);">Add to Cart</button>
+            `;
+            mealModal.classList.add('show');
+        }
     }
 };
 
@@ -190,65 +204,49 @@ document.addEventListener('DOMContentLoaded', () => {
     loadData();
 
     // =========================================
-    // ✅ 100% FOOLPROOF DYNAMIC BACK BUTTON
+    // ✅ FOOLPROOF DYNAMIC BACK BUTTON (FIXED LOGIC)
     // =========================================
     const backBtn = document.getElementById('dynamicBackBtn');
     
     if (backBtn) {
         backBtn.onclick = function(e) {
-            e.preventDefault(); // ডিফল্ট কাজ বন্ধ করবে
+            e.preventDefault(); 
             
-            // চেক করবে ইউজারের নাম স্টোরেজে আছে কি না
             const isLoggedIn = localStorage.getItem('registeredUserName');
-            const previousPage = document.referrer || '';
 
-            // যদি সে আগে ড্যাশবোর্ডে থাকে বা লগ-ইন করা থাকে
-            if (isLoggedIn || previousPage.includes('Dashboard')) {
+            if (isLoggedIn) {
                 window.location.href = '../Dashboard Page/index.html';
             } else {
-                // অন্যথায় হোম পেজে পাঠাবে
-                window.location.href = '../index.html';
+                window.location.href = '../index.html'; 
             }
         };
     }
 
-    window.openMealModal = function(id) {
-    // এখানে Menue বানানটা ফোল্ডারের নামের সাথে মিলিয়ে দেওয়া হয়েছে
-    window.location.href = `../Menue Details Page/index.html?id=${id}`;
-};
+    // =========================================
+    // ✅ CHECKOUT LOGIC & GUEST REDIRECT
+    // =========================================
+    const confirmOrderBtn = document.querySelector('.checkout-btn');
 
-if(confirmOrderBtn) {
+    if(confirmOrderBtn) {
         confirmOrderBtn.addEventListener('click', () => {
-            if(localCart.length === 0) {
+            if(cart.length === 0) {
                 alert("Please add some meals to your basket first!");
                 return;
             }
             
-            confirmOrderBtn.innerText = "Processing...";
+            // 🔥 GUEST CHECK LOGIC
+            const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
+            if (!isLoggedIn) {
+                alert("Please Sign In to proceed to checkout!");
+                window.location.href = '../Sign In Page/Signin_index.html';
+                return; 
+            }
+            
+            // লগ-ইন থাকলে সরাসরি পেমেন্ট পেজে পাঠাবে
+            confirmOrderBtn.innerText = "Proceeding to Pay...";
             setTimeout(() => {
-                
-                // ✅ নতুন আপডেট: কার্ট ক্লিয়ার করার আগে অর্ডার হিস্ট্রিতে ডেটা সেভ করা
-                let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
-                
-                localCart.forEach(item => {
-                    orderHistory.push({
-                        id: '#TFP' + Math.floor(1000 + Math.random() * 9000),
-                        date: new Date().toLocaleDateString(),
-                        amount: item.price,
-                        name: item.name
-                    });
-                });
-                localStorage.setItem('tasteForgeOrders', JSON.stringify(orderHistory));
-
-                alert("Order Confirmed Successfully! 🎉 Your loyalty points have been updated.");
-                
-                // এরপর কার্ট ক্লিয়ার করা
-                localCart = []; 
-                localStorage.setItem('tasteForgeCartItems', JSON.stringify(localCart));
-                confirmOrderBtn.innerText = "Confirm Order";
-                if(cartModal) cartModal.classList.remove('show');
-                window.location.href = '../Dashboard Page/index.html'; // অর্ডার শেষে সরাসরি ড্যাশবোর্ডে পাঠিয়ে দাও
-            }, 1000);
+                window.location.href = '../Payment Page/index.html'; 
+            }, 600);
         });
     }
 });

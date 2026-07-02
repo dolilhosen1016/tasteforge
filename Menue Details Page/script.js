@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalEl = document.getElementById('cartTotal');
     const confirmOrderBtn = document.getElementById('confirmOrderBtn');
 
-    // ✅ FIXED BUG: এখানে Event Delegation ব্যবহার করা হয়েছে যেন আইকন/ব্যাজ যেখানেই ক্লিক লাগুক কার্ট ওপেন হয়
+    // ✅ FIXED BUG: এখানে Event Delegation ব্যবহার করা হয়েছে যেন আইকন/ব্যাজ যেখানেই ক্লিক লাগুক কার্ট ওপেন হয়
     document.addEventListener('click', function(e) {
         if (e.target.closest('.cart-btn')) {
             e.preventDefault();
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // কার্টের UI আপডেট করা (নিরাপদ উপায়ে প্রাইস ও ক্যালোরি হ্যান্ডেল করা হয়েছে)
+    // কার্টের UI আপডেট করা (নিরাপদ উপায়ে প্রাইস ও ক্যালোরি হ্যান্ডেল করা হয়েছে)
     function updateCartUI() {
         if (!cartItemsContainer || !cartTotalEl) return;
 
@@ -329,6 +329,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Please add some meals to your basket first!");
                 return;
             }
+            
+            // 🔥 GUEST CHECK LOGIC
+            const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
+            if (!isLoggedIn) {
+                alert("Please Sign In to proceed to payment!");
+                window.location.href = '../Sign In Page/Signin_index.html';
+                return; 
+            }
+            
             confirmOrderBtn.innerText = "Proceeding to Pay...";
             setTimeout(() => {
                 window.location.href = '../Payment Page/index.html';

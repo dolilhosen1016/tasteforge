@@ -3,25 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // 1. DYNAMIC REGISTRATION/LOGIN INITIALIZATION
     // =========================================
-    // LocalStorage থেকে নাম এবং ইমেইল নিয়ে আসা
     const storedName = localStorage.getItem('registeredUserName') || 'Dolil Hosen'; 
     const storedEmail = localStorage.getItem('registeredUserEmail') || 'guest@tasteforge.com'; 
 
-    // নাম আপডেট করা (Header, Dropdown, Settings)
     document.getElementById('userNameDisplay').textContent = storedName.split(' ')[0];
     document.getElementById('dropdownName').textContent = storedName;
     
     const settingsNameInput = document.getElementById('settingsInputName');
     if(settingsNameInput) settingsNameInput.value = storedName;
 
-    // ✅ FIXED: ইমেইল আপডেট করা (Dropdown & Settings)
     const dropdownEmail = document.getElementById('dropdownEmail');
     if(dropdownEmail) dropdownEmail.textContent = storedEmail;
 
     const settingsEmailInput = document.querySelector('.setting-group input[type="email"]');
     if(settingsEmailInput) settingsEmailInput.value = storedEmail;
 
-    // Time-based Greeting
     const currentHour = new Date().getHours();
     let timeGreeting = 'Good Evening';
     if (currentHour < 12) timeGreeting = 'Good Morning';
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSavedBuildsDashboard();
 
     // =========================================
-    // 3. DYNAMIC LOYALTY POINTS TRACKING
+    // 3. DYNAMIC LOYALTY POINTS & ORDER TRACKING
     // =========================================
     const orderListContainer = document.getElementById('orderListContainer');
     const orderViewAllBtn = document.getElementById('orderViewAllBtn');
@@ -84,11 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pointsProgressFill = document.getElementById('pointsProgressFill');
     const nextRewardText = document.getElementById('nextRewardText');
 
-    // ✅ শুধুমাত্র কনফার্ম হওয়া অর্ডারের হিস্ট্রি থেকে কাউন্ট হবে
     let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
     
     let totalItemsCrafted = orderHistory.length; 
-    let pointsPerMeal = 100; // প্রতি অর্ডারে ১০০ পয়েন্ট
+    let pointsPerMeal = 100; 
     let currentPoints = totalItemsCrafted * pointsPerMeal;
     let rewardMilestoneTarget = 500; 
 
@@ -100,7 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pointsProgressFill) pointsProgressFill.style.width = `${progressPercentage}%`;
     if (nextRewardText) nextRewardText.textContent = `Next Reward: ${rewardMilestoneTarget} pts`;
 
-    if (orderListContainer) {
+    // ✅ FIXED: অর্ডার রেন্ডার করার জন্য নতুন ফাংশন
+    window.renderOrderHistory = function(showAll = false) {
+        if (!orderListContainer) return;
+
         if (orderHistory.length === 0) {
             orderListContainer.innerHTML = `
                 <div class="empty-state">
@@ -112,7 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (orderViewAllBtn) orderViewAllBtn.style.display = 'none';
         } else {
             let htmlContent = '';
-            const recentOrders = orderHistory.slice().reverse().slice(0, 3); 
+            let recentOrders = orderHistory.slice().reverse(); // নতুনগুলো আগে
+
+            if (!showAll) {
+                recentOrders = recentOrders.slice(0, 3); // ড্যাশবোর্ডে শুধু ৩টা দেখাবে
+                if (orderViewAllBtn) orderViewAllBtn.style.display = 'inline-block';
+            } else {
+                if (orderViewAllBtn) orderViewAllBtn.style.display = 'none'; // ভিউ অল পেজে বাটনটা দরকার নেই
+            }
             
             recentOrders.forEach(order => {
                 htmlContent += `
@@ -126,7 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             orderListContainer.innerHTML = htmlContent;
         }
-    }
+    };
+
+    // প্রথমবার ৩টা অর্ডার লোড হবে
+    renderOrderHistory(false);
 
     // =========================================
     // 4. ACTION DROPDOWNS (Man Icon & Notifications)
@@ -297,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // কার্টে অ্যাড করার ফাংশন
     window.orderSavedBuild = function(index) {
         let savedBuilds = JSON.parse(localStorage.getItem('tasteForgeSavedBuilds')) || [];
         let localCart = JSON.parse(localStorage.getItem('tasteForgeCartItems')) || [];
@@ -308,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("✨ Masterpiece added to your basket!");
     };
 
-    // ডিলিট করার ফাংশন
     window.deleteSavedBuild = function(index) {
         if(confirm("Are you sure you want to delete this build?")) {
             let savedBuilds = JSON.parse(localStorage.getItem('tasteForgeSavedBuilds')) || [];
@@ -321,12 +327,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserSavedBuilds();
 
     // =========================================
-    // 8. LEFT SIDEBAR TAB LOGIC (DASHBOARD VS SAVED BUILDS)
+    // 8. LEFT SIDEBAR TAB LOGIC & VIEW ALL SYNC
     // =========================================
     
     // বাটনগুলো সিলেক্ট করা
-    const tabSavedBtn = document.getElementById('sidebarSavedBtn');
     const tabDashBtn = document.querySelector('.sidebar-nav .nav-item:first-child'); 
+    const tabOrdersBtn = document.querySelector('.sidebar-nav .nav-item:nth-child(3)'); // সাইডবারের ২য় বাটন (Orders) ধরে নিলাম
+    const tabSavedBtn = document.getElementById('sidebarSavedBtn');
     
     // সেকশনগুলো সিলেক্ট করা
     const sectionOverview = document.querySelector('.overview-cards');
@@ -338,40 +345,71 @@ document.addEventListener('DOMContentLoaded', () => {
         sectionSavedBuilds.style.display = 'none';
     }
 
-    // ২. Left Side "Saved Builds" বাটনে ক্লিক করলে:
-    if (tabSavedBtn) {
-        tabSavedBtn.onclick = function(e) {
-            e.preventDefault();
-            
-            // ড্যাশবোর্ডের অন্য জিনিস হাইড করে শুধু Saved Builds দেখানো
-            if(sectionOverview) sectionOverview.style.display = 'none';
-            if(sectionOrders) sectionOrders.style.display = 'none';
-            if(sectionSavedBuilds) sectionSavedBuilds.style.display = 'block';
-            
-            // এক্টিভ কালার চেঞ্জ করা
-            if(tabDashBtn) tabDashBtn.classList.remove('active');
-            tabSavedBtn.classList.add('active');
-            
-            // ডেটা লোড করা
-            if (typeof loadUserSavedBuilds === "function") {
-                loadUserSavedBuilds(); 
-            }
-        };
-    }
+    // ✅ FIXED: টেমপ্লেট সুইচ করার জন্য সেন্ট্রাল ফাংশন
+    function switchDashboardTab(tabName) {
+        // সব বাটনের এক্টিভ কালার রিমুভ করা
+        if(tabDashBtn) tabDashBtn.classList.remove('active');
+        if(tabOrdersBtn) tabOrdersBtn.classList.remove('active');
+        if(tabSavedBtn) tabSavedBtn.classList.remove('active');
 
-    // ৩. Left Side "Dashboard" বাটনে ক্লিক করলে আবার আগের অবস্থায় ফেরা:
-    if (tabDashBtn) {
-        tabDashBtn.onclick = function(e) {
-            e.preventDefault();
-            
-            // ✅ FIXED: 'flex' এবং 'block' এর জায়গায় '' (ফাঁকা) দিলে তোমার style.css এর অরিজিনাল গ্রিড ডিজাইনটা কাজ করবে!
+        if(tabName === 'dashboard') {
+            if(tabDashBtn) tabDashBtn.classList.add('active');
             if(sectionOverview) sectionOverview.style.display = ''; 
             if(sectionOrders) sectionOrders.style.display = '';
             if(sectionSavedBuilds) sectionSavedBuilds.style.display = 'none';
-            
-            // এক্টিভ কালার চেঞ্জ করা
-            tabSavedBtn.classList.remove('active');
-            tabDashBtn.classList.add('active');
-        };
+            renderOrderHistory(false); // ড্যাশবোর্ডে শুধু ৩টা দেখাবে
+        } 
+        else if (tabName === 'orders') {
+            if(tabOrdersBtn) tabOrdersBtn.classList.add('active');
+            if(sectionOverview) sectionOverview.style.display = 'none'; // ওভারভিউ লুকানো হবে
+            if(sectionOrders) sectionOrders.style.display = ''; // অর্ডার লিস্ট ফুল স্ক্রিনে দেখাবে
+            if(sectionSavedBuilds) sectionSavedBuilds.style.display = 'none';
+            renderOrderHistory(true); // সব অর্ডার দেখাবে
+        }
+        else if (tabName === 'saved') {
+            if(tabSavedBtn) tabSavedBtn.classList.add('active');
+            if(sectionOverview) sectionOverview.style.display = 'none';
+            if(sectionOrders) sectionOrders.style.display = 'none';
+            if(sectionSavedBuilds) sectionSavedBuilds.style.display = 'block';
+            if (typeof loadUserSavedBuilds === "function") loadUserSavedBuilds(); 
+        }
+    }
+
+    // বাটন ক্লিক ইভেন্টগুলো
+    if (tabDashBtn) tabDashBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('dashboard'); };
+    if (tabOrdersBtn) tabOrdersBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('orders'); };
+    if (tabSavedBtn) tabSavedBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('saved'); };
+    
+    // View All বাটনে ক্লিক করলেও Orders ট্যাবে নিয়ে যাবে
+    if (orderViewAllBtn) {
+        orderViewAllBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchDashboardTab('orders');
+        });
+    }
+
+    // =========================================
+    // 9. SECURE LOGOUT / SIGN OUT LOGIC
+    // =========================================
+    const logoutButtons = document.querySelectorAll('.logout-btn, .logout'); 
+
+    if (logoutButtons.length > 0) {
+        logoutButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if(confirm("Are you sure you want to sign out?")) {
+                    localStorage.removeItem('registeredUserName');
+                    localStorage.removeItem('registeredUserEmail');
+                    localStorage.removeItem('registeredUserPassword');
+                    
+                    localStorage.removeItem('tasteForgeOrders'); 
+                    localStorage.removeItem('tasteForgeSavedBuilds');
+                    localStorage.removeItem('tasteForgeCartItems');
+                    
+                    window.location.href = '../index.html'; 
+                }
+            });
+        });
     }
 });

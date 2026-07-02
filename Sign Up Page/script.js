@@ -33,14 +33,21 @@ function togglePassword() {
 
 // Signup Form Handler (Dashboard এর সাথে কানেক্ট করার লজিক)
 function handleSignup(event) {
-    event.preventDefault(); // পেজ রিলোড হওয়া বন্ধ করবে
+    event.preventDefault(); // পেজ রিলোড হওয়া বন্ধ করবে
     
     const form = event.target;
     
-    // HTML-এ ID না থাকায় placeholder দিয়ে ইনপুট ডাটাগুলো ধরা হয়েছে
+    // HTML-এ ID না থাকায় placeholder দিয়ে ইনপুট ডাটাগুলো ধরা হয়েছে
     const nameInput = form.querySelector('input[placeholder="Full Name"]');
     const emailInput = form.querySelector('input[placeholder="Email Address"]');
     const passwordInput = form.querySelector('input[placeholder="Password"]');
+    
+    // ✅ Secret Access Key Validation (Kono exising code change na kore shudhu validation add kora hoyeche)
+    const secretKeyInput = form.querySelector('input[placeholder="Secret Access Key"]');
+    if (secretKeyInput && secretKeyInput.value !== "TF_OWNER_2026") {
+        alert("❌ Unauthorized Access! Invalid Secret Access Key.");
+        return;
+    }
     
     if (nameInput && emailInput && passwordInput) {
         
@@ -51,7 +58,7 @@ function handleSignup(event) {
         
         alert("Registration Successful! Please sign in to continue.");
         
-        // সাকসেসফুল রেজিস্ট্রেশনের পর সরাসরি Sign In পেজে নিয়ে যাবে
+        // সাকসেসফুল রেজিস্ট্রেশনের পর সরাসরি Sign In পেজে নিয়ে যাবে
         window.location.href = '../Sign In Page/Signin_index.html'; 
         
     } else {
@@ -63,16 +70,23 @@ function handleSignup(event) {
 // ✅ SIGN UP LOGIC (User & Owner)
 // =========================================
 
-// HTML এর onsubmit থেকে সরাসরি কল হওয়ার জন্য ফাংশনটিকে গ্লোবাল করা হলো
+// HTML এর onsubmit থেকে সরাসরি কল হওয়ার জন্য ফাংশনটিকে গ্লোবাল করা হলো
 window.handleSignup = function(event) {
     event.preventDefault(); // পেজ রিলোড বন্ধ করবে
     
     const form = event.target;
     
-    // Placeholder দিয়ে ডাটা রিসিভ করা
+    // Placeholder দিয়ে ডাটা রিসিভ করা
     const nameInput = form.querySelector('input[placeholder="Full Name"]');
     const emailInput = form.querySelector('input[placeholder="Email Address"]');
     const passwordInput = form.querySelector('input[placeholder="Password"]');
+    
+    // ✅ Secret Access Key Validation (Kono exising code change na kore shudhu validation add kora hoyeche)
+    const secretKeyInput = form.querySelector('input[placeholder="Secret Access Key"]');
+    if (secretKeyInput && secretKeyInput.value !== "TF_OWNER_61016") {
+        alert("❌ Unauthorized Access! Invalid Secret Access Key.");
+        return;
+    }
     
     if (nameInput && emailInput && passwordInput) {
         
@@ -83,7 +97,7 @@ window.handleSignup = function(event) {
         
         alert("Registration Successful! Please sign in to continue.");
         
-        // সেভ হওয়ার পর Sign In পেজে পাঠিয়ে দেবে
+        // সেভ হওয়ার পর Sign In পেজে পাঠিয়ে দেবে
         window.location.href = '../Sign In Page/Signin_index.html'; 
         
     } else {
