@@ -2,7 +2,6 @@ const grid = document.getElementById('menuGrid');
 const filterBtns = document.querySelectorAll('.filter-btn');
 
 let allMeals = [];
-// ✅ কার্ট ইনিশিয়ালাইজ করার সময় লোকাল স্টোরেজ থেকে ডেটা নেবে, যাতে পেমেন্ট পেজে ডেটা যায়
 let cart = JSON.parse(localStorage.getItem('tasteForgeCartItems')) || [];
 
 // Load data from JSON file
@@ -25,7 +24,7 @@ async function loadData() {
 // Render Cards Function
 function renderCards(meals) {
     if (!grid) return;
-    grid.innerHTML = ''; 
+    grid.innerHTML = '';
     meals.forEach(meal => {
         const cardHTML = `
             <div class="card" style="cursor: pointer;" onclick="openMealModal(${meal.id})">
@@ -88,10 +87,8 @@ window.addToCart = function(id, event) {
     const meal = allMeals.find(m => m.id === id);
     if (meal) {
         cart.push(meal);
-        // ✅ কার্ট আপডেট হওয়ার সাথে সাথে স্টোরেজও আপডেট হবে
         localStorage.setItem('tasteForgeCartItems', JSON.stringify(cart));
         
-        // Button animation
         const btn = event.target;
         btn.innerText = "Added!";
         btn.style.backgroundColor = "#fff";
@@ -120,7 +117,6 @@ if (closeModalBtn) {
 // Update Cart UI
 function updateCartUI() {
     if (!cartItemsContainer || !cartTotalEl) return;
-    
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Your cart is empty.</p>';
         cartTotalEl.innerText = '0.00';
@@ -129,7 +125,6 @@ function updateCartUI() {
 
     cartItemsContainer.innerHTML = '';
     let total = 0;
-
     cart.forEach((item, index) => {
         total += item.price;
         cartItemsContainer.innerHTML += `
@@ -142,14 +137,12 @@ function updateCartUI() {
             </div>
         `;
     });
-
     cartTotalEl.innerText = total.toFixed(2);
 }
 
 // Remove Item from Cart
 window.removeFromCart = function(index) {
     cart.splice(index, 1);
-    // ✅ রিমুভ করার সময়ও স্টোরেজ আপডেট হবে
     localStorage.setItem('tasteForgeCartItems', JSON.stringify(cart));
     updateCartUI();
 };
@@ -160,14 +153,12 @@ const closeMealModal = document.getElementById('closeMealModal');
 const mealModalBody = document.getElementById('mealModalBody');
 
 window.openMealModal = function(id) {
-    // 🔥 LOGIC: ইউজার লগ-ইন করা আছে কি না চেক করো
-    const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
-
+    // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+    const isLoggedIn = localStorage.getItem('tasteForgeUserName') !== null;
+    
     if (isLoggedIn) {
-        // লগ-ইন থাকলে সরাসরি Details Page এ চলে যাবে কাস্টমাইজ করার জন্য
         window.location.href = `../Menue Details Page/index.html?id=${id}`;
     } else {
-        // লগ-ইন না থাকলে (গেস্ট মোড) শুধু পপ-আপ দেখাবে
         const meal = allMeals.find(m => m.id === id);
         if(meal && mealModalBody) {
             mealModalBody.innerHTML = `
@@ -212,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
         backBtn.onclick = function(e) {
             e.preventDefault(); 
             
-            const isLoggedIn = localStorage.getItem('registeredUserName');
+            // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+            const isLoggedIn = localStorage.getItem('tasteForgeUserName');
 
             if (isLoggedIn) {
                 window.location.href = '../Dashboard Page/index.html';
@@ -234,15 +226,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // 🔥 GUEST CHECK LOGIC
-            const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
+            // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+            const isLoggedIn = localStorage.getItem('tasteForgeUserName') !== null;
+            
             if (!isLoggedIn) {
                 alert("Please Sign In to proceed to checkout!");
                 window.location.href = '../Sign In Page/Signin_index.html';
                 return; 
             }
             
-            // লগ-ইন থাকলে সরাসরি পেমেন্ট পেজে পাঠাবে
             confirmOrderBtn.innerText = "Proceeding to Pay...";
             setTimeout(() => {
                 window.location.href = '../Payment Page/index.html'; 

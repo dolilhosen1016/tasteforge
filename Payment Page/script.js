@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutTotalEl = document.getElementById('checkoutTotal');
     let totalAmount = 0;
 
-    // কার্ট থেকে টোটাল হিসাব করা
     if (localCart.length > 0) {
         localCart.forEach(item => {
             totalAmount += parseFloat(item.price || item.totalPrice || 0);
@@ -22,24 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     const toast = document.getElementById('toastMessage');
     
-    // HTML থেকে onclick="showToast()" কল হবে
     window.showToast = function() {
         if (!toast) return;
         toast.classList.add('show');
-        
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
     };
 
     // =========================================
-    // 3. CONFIRM ORDER LOGIC
+    // 3. CONFIRM ORDER LOGIC (🔥 FIXED: SAVING USER DATA)
     // =========================================
     const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
     const paymentSection = document.getElementById('paymentSection');
     const confirmationSection = document.getElementById('confirmationSection');
     
-    // Receipt Display Elements
     const displayOrderId = document.getElementById('displayOrderId');
     const displayQueue = document.getElementById('displayQueue');
 
@@ -54,35 +50,39 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmPaymentBtn.innerText = "Processing...";
             
             setTimeout(() => {
-                // ১. জেনারেট Order ID এবং Queue Number
                 const newOrderId = '#TFP' + Math.floor(1000 + Math.random() * 9000);
-                const queueNumber = Math.floor(1 + Math.random() * 50); // 1 to 50 সিরিয়াল
+                const queueNumber = Math.floor(1 + Math.random() * 50);
 
-                // ২. ড্যাশবোর্ডের জন্য অর্ডার হিস্ট্রিতে সেভ করা
+                // 🔥 FIXED: বর্তমান লগ-ইন করা ইউজারের ডেটা টেনে আনা হলো
+                const activeUserName = localStorage.getItem('tasteForgeUserName') || 'Guest Customer';
+                const activeUserEmail = localStorage.getItem('tasteForgeUserEmail') || 'guest@tasteforge.com';
+
                 let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
+                
                 localCart.forEach(item => {
                     orderHistory.push({
                         id: newOrderId,
                         date: new Date().toLocaleDateString(),
                         amount: item.price,
                         name: item.name,
-                        status: 'Pending' // ওনারের ড্যাশবোর্ডের জন্য কাজে লাগবে
+                        status: 'Pending',
+                        // 🔥 FIXED: অর্ডারের সাথে ইউজারের নাম ও ইমেইল পারমানেন্টলি সেভ করে দেওয়া হলো
+                        customerName: activeUserName,
+                        customerEmail: activeUserEmail
                     });
                 });
+                
                 localStorage.setItem('tasteForgeOrders', JSON.stringify(orderHistory));
 
-                // ৩. UI তে ডেটা বসানো
                 if(displayOrderId) displayOrderId.innerText = newOrderId;
                 if(displayQueue) displayQueue.innerText = queueNumber;
 
-                // ৪. কার্ট ক্লিয়ার করা
                 localStorage.removeItem('tasteForgeCartItems');
-
-                // ৫. পেমেন্ট পেজ হাইড করে কনফার্মেশন পেজ দেখানো
+                
                 if(paymentSection) paymentSection.style.display = 'none';
                 if(confirmationSection) confirmationSection.style.display = 'block';
 
-            }, 1200); // একটু রিয়েলিস্টিক ডিলে
+            }, 1200); 
         });
     }
 
@@ -90,12 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. DOWNLOAD RECEIPT (PRINT LOGIC)
     // =========================================
     const downloadReceiptBtn = document.getElementById('downloadReceiptBtn');
-    
     if (downloadReceiptBtn) {
         downloadReceiptBtn.addEventListener('click', () => {
-            // ব্রাউজারের ডিফল্ট প্রিন্ট পপ-আপ ওপেন করবে (PDF সেভ করা যায়)
             window.print(); 
         });
     }
-
 });

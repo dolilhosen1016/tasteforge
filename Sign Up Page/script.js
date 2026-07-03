@@ -1,4 +1,6 @@
-// Tab Switching Logic (Sign In Page)
+// =========================================
+// ✅ TAB SWITCHING LOGIC
+// =========================================
 function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -9,7 +11,9 @@ function switchTab(tabId) {
     }
 }
 
-// Password Visibility Toggle Logic
+// =========================================
+// ✅ PASSWORD VISIBILITY TOGGLE
+// =========================================
 function togglePassword() {
     const passwordInput = document.getElementById('passwordInput');
     const eyeIcon = document.getElementById('eye-icon');
@@ -31,76 +35,45 @@ function togglePassword() {
     }
 }
 
-// Signup Form Handler (Dashboard এর সাথে কানেক্ট করার লজিক)
-function handleSignup(event) {
-    event.preventDefault(); // পেজ রিলোড হওয়া বন্ধ করবে
-    
-    const form = event.target;
-    
-    // HTML-এ ID না থাকায় placeholder দিয়ে ইনপুট ডাটাগুলো ধরা হয়েছে
-    const nameInput = form.querySelector('input[placeholder="Full Name"]');
-    const emailInput = form.querySelector('input[placeholder="Email Address"]');
-    const passwordInput = form.querySelector('input[placeholder="Password"]');
-    
-    // ✅ Secret Access Key Validation (Kono exising code change na kore shudhu validation add kora hoyeche)
-    const secretKeyInput = form.querySelector('input[placeholder="Secret Access Key"]');
-    if (secretKeyInput && secretKeyInput.value !== "TF_OWNER_2026") {
-        alert("❌ Unauthorized Access! Invalid Secret Access Key.");
-        return;
-    }
-    
-    if (nameInput && emailInput && passwordInput) {
-        
-        // ড্যাশবোর্ডে নাম দেখানো এবং লগ-ইন ভেরিফিকেশনের জন্য LocalStorage-এ ডাটা সেভ করা হচ্ছে
-        localStorage.setItem('registeredUserName', nameInput.value);
-        localStorage.setItem('registeredUserEmail', emailInput.value);
-        localStorage.setItem('registeredUserPassword', passwordInput.value);
-        
-        alert("Registration Successful! Please sign in to continue.");
-        
-        // সাকসেসফুল রেজিস্ট্রেশনের পর সরাসরি Sign In পেজে নিয়ে যাবে
-        window.location.href = '../Sign In Page/Signin_index.html'; 
-        
-    } else {
-        alert("Sign Up Form Submitted Successfully!");
-    }
-}
-
 // =========================================
-// ✅ SIGN UP LOGIC (User & Owner)
+// ✅ SIGN UP LOGIC (100% Bug Free Version)
 // =========================================
-
-// HTML এর onsubmit থেকে সরাসরি কল হওয়ার জন্য ফাংশনটিকে গ্লোবাল করা হলো
 window.handleSignup = function(event) {
-    event.preventDefault(); // পেজ রিলোড বন্ধ করবে
+    event.preventDefault(); 
     
     const form = event.target;
     
-    // Placeholder দিয়ে ডাটা রিসিভ করা
+    // 🔥 FIXED: একদম স্পেসিফিক placeholder দিয়ে ডাটা ধরা হয়েছে
     const nameInput = form.querySelector('input[placeholder="Full Name"]');
     const emailInput = form.querySelector('input[placeholder="Email Address"]');
     const passwordInput = form.querySelector('input[placeholder="Password"]');
     
-    // ✅ Secret Access Key Validation (Kono exising code change na kore shudhu validation add kora hoyeche)
     const secretKeyInput = form.querySelector('input[placeholder="Secret Access Key"]');
-    if (secretKeyInput && secretKeyInput.value !== "TF_OWNER_61016") {
-        alert("❌ Unauthorized Access! Invalid Secret Access Key.");
-        return;
-    }
     
-    if (nameInput && emailInput && passwordInput) {
-        
-        // LocalStorage এ ডাটা সেভ করা হচ্ছে
-        localStorage.setItem('registeredUserName', nameInput.value);
-        localStorage.setItem('registeredUserEmail', emailInput.value);
-        localStorage.setItem('registeredUserPassword', passwordInput.value);
-        
-        alert("Registration Successful! Please sign in to continue.");
-        
-        // সেভ হওয়ার পর Sign In পেজে পাঠিয়ে দেবে
-        window.location.href = '../Sign In Page/Signin_index.html'; 
-        
-    } else {
-        alert("Sign Up Form Submitted Successfully!");
+    // 1. OWNER SIGNUP FLOW 
+    if (secretKeyInput) {
+        if (secretKeyInput.value !== "TF_OWNER_61016") {
+            alert("❌ Unauthorized Access! Invalid Secret Access Key.");
+            return;
+        }
+        if (nameInput && emailInput && passwordInput) {
+            localStorage.setItem('tasteForgeOwnerName', nameInput.value.trim());
+            localStorage.setItem('tasteForgeOwnerEmail', emailInput.value.trim());
+            localStorage.setItem('tasteForgeOwnerPassword', passwordInput.value.trim());
+            
+            alert("Owner Registration Successful! Please sign in to continue.");
+            window.location.href = '../Sign In Page/Signin_index.html'; 
+        }
+    } 
+    // 2. USER SIGNUP FLOW 
+    else {
+        if (nameInput && emailInput && passwordInput) {
+            localStorage.setItem('tasteForgeUserName', nameInput.value.trim());
+            localStorage.setItem('tasteForgeUserEmail', emailInput.value.trim());
+            localStorage.setItem('tasteForgeUserPassword', passwordInput.value.trim());
+            
+            alert("User Registration Successful! Please sign in to continue.");
+            window.location.href = '../Sign In Page/Signin_index.html'; 
+        }
     }
 };

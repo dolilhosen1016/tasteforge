@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             const meal = data.find(item => item.id === targetMealId);
-
+            
             if (meal) {
                 currentMeal = {
                     id: meal.id,
@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderWorkspace() {
         if(!workspaceRoot) return;
         
-        const isRegistered = localStorage.getItem('registeredUserName') !== null;
+        // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+        const isRegistered = localStorage.getItem('tasteForgeUserName') !== null;
         let ingredientsHTML = '';
         
         if (currentMeal.ingredients.length > 0) {
@@ -92,14 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const guestWarning = !isRegistered 
             ? `<div class="guest-lock-msg"><i class="fa-solid fa-lock"></i> Please Sign In/Sign Up to customize ingredients.</div>` 
             : '';
-
+            
         workspaceRoot.innerHTML = `
             <div class="left-panel">
                 <img src="${currentMeal.imageUrl}" alt="${currentMeal.name}" class="food-image">
                 <div class="floating-price-card">
                     <p>Total Price</p>
                     <div class="total-price" id="livePrice">$${currentMeal.totalPrice.toFixed(2)}</div>
-                    
                     <div class="macro-stats">
                         <div class="macro-item">
                             <p>Calories</p>
@@ -139,8 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-
-        // ওয়ার্কস্পেস রেন্ডার হওয়ার সাথে সাথে বাটনের লিসেনার কানেক্ট করা হলো
+        
         const addToCartBtnEl = document.getElementById('addToCartBtn');
         const saveBuildBtnEl = document.getElementById('saveBuildBtn');
         
@@ -198,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = `Added to Basket! <i class="fa-solid fa-check"></i>`;
             btn.style.background = "#fff";
             btn.style.color = "#000";
-
+            
             setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.style.background = "var(--accent)";
@@ -211,7 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. SAVE BUILD LOGIC
     // =========================================
     window.saveBuildToDashboard = function() {
-        const isRegistered = localStorage.getItem('registeredUserName') !== null;
+        // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+        const isRegistered = localStorage.getItem('tasteForgeUserName') !== null;
         
         if (!isRegistered) {
             alert("🔒 Please Sign In or Create an Account to save your custom masterpiece!");
@@ -219,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let savedBuilds = JSON.parse(localStorage.getItem('tasteForgeSavedBuilds')) || [];
-        
         const buildPayload = {
             buildId: 'TF-BUILD-' + Date.now(),
             baseMealId: currentMeal.id,
@@ -231,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             savedDate: new Date().toLocaleDateString(),
             ingredients: currentMeal.ingredients
         };
-
+        
         savedBuilds.push(buildPayload);
         localStorage.setItem('tasteForgeSavedBuilds', JSON.stringify(savedBuilds));
 
@@ -259,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalEl = document.getElementById('cartTotal');
     const confirmOrderBtn = document.getElementById('confirmOrderBtn');
 
-    // ✅ FIXED BUG: এখানে Event Delegation ব্যবহার করা হয়েছে যেন আইকন/ব্যাজ যেখানেই ক্লিক লাগুক কার্ট ওপেন হয়
     document.addEventListener('click', function(e) {
         if (e.target.closest('.cart-btn')) {
             e.preventDefault();
@@ -268,24 +266,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // কার্ট ক্লোজ করা (X বাটন)
     if (closeCartModal) {
         closeCartModal.addEventListener('click', () => {
             if(cartModal) cartModal.classList.remove('show');
         });
     }
 
-    // বাইরে ক্লিক করলে কার্ট ক্লোজ হবে
     window.addEventListener('click', (e) => {
         if (e.target === cartModal) {
             cartModal.classList.remove('show');
         }
     });
 
-    // কার্টের UI আপডেট করা (নিরাপদ উপায়ে প্রাইস ও ক্যালোরি হ্যান্ডেল করা হয়েছে)
     function updateCartUI() {
         if (!cartItemsContainer || !cartTotalEl) return;
-
+        
         if (localCart.length === 0) {
             cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Your basket is empty.</p>';
             cartTotalEl.innerText = '0.00';
@@ -294,9 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cartItemsContainer.innerHTML = '';
         let total = 0;
-
+        
         localCart.forEach((item, index) => {
-            // পুরাতন বা ভাঙা ডেটার সিকিউরিটি সেফগার্ড
             const itemPrice = parseFloat(item.price || item.totalPrice || 0);
             const itemCalories = item.calories || item.totalCalories || 0;
             
@@ -311,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         });
-
+        
         cartTotalEl.innerText = total.toFixed(2);
     }
 
@@ -322,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartUI();
     };
 
-    // Confirm Order বাটন লজিক (Payment এ যাওয়ার জন্য)
     if (confirmOrderBtn) {
         confirmOrderBtn.addEventListener('click', () => {
             if (localCart.length === 0) {
@@ -330,8 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // 🔥 GUEST CHECK LOGIC
-            const isLoggedIn = localStorage.getItem('registeredUserName') !== null;
+            // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
+            const isLoggedIn = localStorage.getItem('tasteForgeUserName') !== null;
+            
             if (!isLoggedIn) {
                 alert("Please Sign In to proceed to payment!");
                 window.location.href = '../Sign In Page/Signin_index.html';

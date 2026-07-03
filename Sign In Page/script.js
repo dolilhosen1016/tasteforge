@@ -1,46 +1,15 @@
-// URL চেক করে সঠিক ট্যাব (User/Owner) অ্যাকটিভ করা
+// =========================================
+// ✅ INITIALIZE URL TAB
+// =========================================
 function initializeTab() {
     const urlParams = new URLSearchParams(window.location.search);
     const tab = urlParams.get('tab') || 'user';
     switchTab(tab);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializeTab();
-
-    // =========================================
-    // ✅ 100% WORKING LOGIN LOGIC
-    // =========================================
-    const loginForm = document.getElementById('loginForm');
-    
-    if (loginForm) {
-        // HTML এর ইনলাইন onsubmit কে ওভাররাইড করা হলো
-        loginForm.onsubmit = function(event) {
-            event.preventDefault(); 
-            
-            const emailInput = loginForm.querySelector('input[type="email"]');
-            const passwordInput = document.getElementById('passwordInput');
-            
-            if (emailInput && passwordInput) {
-                const inputEmail = emailInput.value;
-                const inputPassword = passwordInput.value;
-                
-                // Sign Up পেজ থেকে সেভ হওয়া ডাটা চেক করা
-                const savedEmail = localStorage.getItem('registeredUserEmail');
-                const savedPassword = localStorage.getItem('registeredUserPassword');
-                
-                if (inputEmail === savedEmail && inputPassword === savedPassword) {
-                    // ডাটা মিলে গেলে সোজা ড্যাশবোর্ডে!
-                    window.location.href = '../Dashboard Page/index.html';
-                } else {
-                    alert('Invalid Credentials! Please check your email and password, or Sign Up first.');
-                }
-            }
-        };
-    }
-});
-
-// Tab Switching Logic
+// =========================================
+// ✅ TAB SWITCHING LOGIC
+// =========================================
 window.switchTab = function(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -61,7 +30,9 @@ window.switchTab = function(tabId) {
     }
 };
 
-// Password Visibility Toggle Logic
+// =========================================
+// ✅ PASSWORD VISIBILITY TOGGLE
+// =========================================
 window.togglePassword = function() {
     const passwordInput = document.getElementById('passwordInput');
     const eyeIcon = document.getElementById('eye-icon');
@@ -82,3 +53,45 @@ window.togglePassword = function() {
         }
     }
 };
+
+// =========================================
+// ✅ SECURE LOGIN & ROUTING LOGIC
+// =========================================
+document.addEventListener('DOMContentLoaded', () => {
+    initializeTab();
+
+    const loginForm = document.getElementById('loginForm');
+    
+    if (loginForm) {
+        loginForm.onsubmit = function(event) {
+            event.preventDefault(); 
+            
+            const emailInput = loginForm.querySelector('input[type="email"]');
+            const passwordInput = document.getElementById('passwordInput');
+            
+            if (emailInput && passwordInput) {
+                const inputEmail = emailInput.value.trim();
+                const inputPassword = passwordInput.value.trim();
+                
+                // Fetch Owner Data
+                const savedOwnerEmail = localStorage.getItem('tasteForgeOwnerEmail');
+                const savedOwnerPassword = localStorage.getItem('tasteForgeOwnerPassword');
+                
+                // Fetch User Data
+                const savedUserEmail = localStorage.getItem('tasteForgeUserEmail');
+                const savedUserPassword = localStorage.getItem('tasteForgeUserPassword');
+                
+                // 🔥 ADMIN VS USER ROUTING LOGIC 🔥
+                if (inputEmail === savedOwnerEmail && inputPassword === savedOwnerPassword) {
+                    window.location.href = '../Owner Dashboard Page/index.html';
+                } 
+                else if (inputEmail === savedUserEmail && inputPassword === savedUserPassword) {
+                    window.location.href = '../Dashboard Page/index.html';
+                } 
+                else {
+                    alert('Invalid Credentials! Please check your email and password, or Sign Up first.');
+                }
+            }
+        };
+    }
+});
