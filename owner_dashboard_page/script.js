@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminMenuList = document.getElementById('adminMenuList');
         if(!adminMenuList) return;
         try {
-            const response = await fetch('../Menu Page/data.json');
+            const response = await fetch('../menu_page/data.json');
             if(!response.ok) throw new Error("JSON Fetch Failed");
             const data = await response.json();
             

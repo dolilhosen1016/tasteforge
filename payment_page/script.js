@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmPaymentBtn.addEventListener('click', () => {
             if (localCart.length === 0) {
                 alert("Your cart is empty! Please add items before checkout.");
-                window.location.href = '../Menu Page/index.html';
+                window.location.href = '../menu_page/index.html';
                 return;
             }
 

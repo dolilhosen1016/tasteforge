@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('detailsBackBtn');
     if(backBtn) {
         backBtn.addEventListener('click', () => {
-            window.location.href = '../Menu Page/index.html';
+            window.location.href = '../menu_page/index.html';
         });
     }
 
@@ -328,13 +328,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!isLoggedIn) {
                 alert("Please Sign In to proceed to payment!");
-                window.location.href = '../Sign In Page/Signin_index.html';
+                    window.location.href = '../sign_in_page/signin_index.html';
                 return; 
             }
             
             confirmOrderBtn.innerText = "Proceeding to Pay...";
             setTimeout(() => {
-                window.location.href = '../Payment Page/index.html';
+                window.location.href = '../payment_page/index.html';
             }, 600);
         });
     }

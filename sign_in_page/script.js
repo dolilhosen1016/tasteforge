@@ -23,9 +23,9 @@ window.switchTab = function(tabId) {
     const signupLink = document.getElementById('signupLink');
     if (signupLink) {
         if (tabId === 'user') {
-            signupLink.href = '../Sign Up Page/User_index.html';
+                signupLink.href = '../sign_up_page/User_index.html';
         } else if (tabId === 'owner') {
-            signupLink.href = '../Sign Up Page/Owner_index.html';
+                signupLink.href = '../sign_up_page/Owner_index.html';
         }
     }
 };
@@ -83,10 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 🔥 ADMIN VS USER ROUTING LOGIC 🔥
                 if (inputEmail === savedOwnerEmail && inputPassword === savedOwnerPassword) {
-                    window.location.href = '../Owner Dashboard Page/index.html';
+                        window.location.href = '../owner_dashboard_page/index.html';
                 } 
                 else if (inputEmail === savedUserEmail && inputPassword === savedUserPassword) {
-                    window.location.href = '../Dashboard Page/index.html';
+                        window.location.href = '../dashboard_page/index.html';
                 } 
                 else {
                     alert('Invalid Credentials! Please check your email and password, or Sign Up first.');

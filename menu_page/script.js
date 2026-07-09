@@ -157,7 +157,7 @@ window.openMealModal = function(id) {
     const isLoggedIn = localStorage.getItem('tasteForgeUserName') !== null;
     
     if (isLoggedIn) {
-        window.location.href = `../Menue Details Page/index.html?id=${id}`;
+        window.location.href = `../menue_details_page/index.html?id=${id}`;
     } else {
         const meal = allMeals.find(m => m.id === id);
         if(meal && mealModalBody) {
@@ -203,11 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
         backBtn.onclick = function(e) {
             e.preventDefault(); 
             
-            // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
             const isLoggedIn = localStorage.getItem('tasteForgeUserName');
 
             if (isLoggedIn) {
-                window.location.href = '../Dashboard Page/index.html';
+                window.location.href = '../dashboard_page/index.html';
             } else {
                 window.location.href = '../index.html'; 
             }
@@ -226,18 +225,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // 🔥 FIXED: নতুন স্টোরেজ কি (tasteForgeUserName) চেক করা হচ্ছে
             const isLoggedIn = localStorage.getItem('tasteForgeUserName') !== null;
             
             if (!isLoggedIn) {
                 alert("Please Sign In to proceed to checkout!");
-                window.location.href = '../Sign In Page/Signin_index.html';
+                window.location.href = '../sign_in_page/signin_index.html';
                 return; 
             }
             
             confirmOrderBtn.innerText = "Proceeding to Pay...";
             setTimeout(() => {
-                window.location.href = '../Payment Page/index.html'; 
+                window.location.href = '../payment_page/index.html'; 
             }, 600);
         });
     }

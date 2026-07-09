@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add interactivity to the Primary Button - navigate to Menu Page
     if (startBtn && startBtn.tagName !== 'A') {
         startBtn.addEventListener('click', () => {
-            window.location.href = 'Menu Page/index.html';
+            window.location.href = 'menu_page/index.html';
         });
     }
 

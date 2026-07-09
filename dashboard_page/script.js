@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadSavedBuildsDashboard() {
         const buildsContainer = document.getElementById('savedBuildsContainer');
         try {
-            const response = await fetch('../Menu Page/data.json');
+            const response = await fetch('../menu_page/data.json');
             if (!response.ok) throw new Error('JSON load failed');
             
             const menuData = await response.json();
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = ''; 
         builds.forEach(build => {
             const cardHTML = `
-                <div class="build-card" onclick="window.location.href='../Menu Page/index.html'">
+                <div class="build-card" onclick="window.location.href='../menu_page/index.html'">
                     <img src="${build.imageUrl}" alt="${build.name}" class="build-img">
                     <button class="fav-btn"><i class="fa-solid fa-heart"></i></button>
                     <div class="build-info">
@@ -78,15 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let myOrders = orderHistory.filter(order => order.customerEmail === storedEmail);
 
         // স্ট্যাটাস আপডেট
-        let totalItemsCrafted = myOrders.length; 
+        // 1. Optional chaining/fallback prevents "Cannot read properties of undefined"
+        let totalItemsCrafted = myOrders?.length || 0; 
         let pointsPerMeal = 20; 
         let currentPoints = totalItemsCrafted * pointsPerMeal;
         let rewardMilestoneTarget = 500; 
 
         if (totalOrdersCount) totalOrdersCount.textContent = totalItemsCrafted;
         if (loyaltyPointsDisplay) loyaltyPointsDisplay.textContent = currentPoints;
+
         let progressPercentage = (currentPoints / rewardMilestoneTarget) * 100;
-        if (progressPercentage > 100) progressPercentage = 100;
+
+        // 2. Math.min is a cleaner, more standard way to cap values at 100
+        progressPercentage = Math.min(progressPercentage, 100);
+
         if (pointsProgressFill) pointsProgressFill.style.width = `${progressPercentage}%`;
         if (nextRewardText) nextRewardText.textContent = `Next Reward: ${rewardMilestoneTarget} pts`;
 
@@ -95,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="empty-state">
                     <i class="fa-solid fa-receipt"></i>
                     <p>You haven't crafted any meals yet.</p>
-                    <a href="../Menu Page/index.html" class="btn primary-btn" style="margin-top: 10px;">Craft Your First Meal</a>
+                    <a href="../menu_page/index.html" class="btn primary-btn" style="margin-top: 10px;">Craft Your First Meal</a>
                 </div>
             `;
             if (orderViewAllBtn) orderViewAllBtn.style.display = 'none';
@@ -193,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             
             // Recalculate points
-            let currentPoints = orderHistory.filter(o => o.customerEmail === storedEmail).length * 100;
+            let currentPoints = orderHistory.filter(o => o.customerEmail === storedEmail).length * 20;
             if (modalRewardsPoints) modalRewardsPoints.textContent = `${currentPoints} PTS`;
 
             rewardClaimButtons.forEach(btn => {
