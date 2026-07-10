@@ -23,7 +23,7 @@ window.switchTab = function(tabId) {
     const signupLink = document.getElementById('signupLink');
     if (signupLink) {
         if (tabId === 'user') {
-                signupLink.href = '../sign_up_page/User_index.html';
+                signupLink.href = '../sign_up_page/user_index.html';
         } else if (tabId === 'owner') {
                 signupLink.href = '../sign_up_page/owner_index.html';
         } else if (tabId === 'chef') {
