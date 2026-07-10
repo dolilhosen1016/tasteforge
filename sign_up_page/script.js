@@ -62,7 +62,7 @@ window.handleSignup = function(event) {
             localStorage.setItem('tasteForgeOwnerPassword', passwordInput.value.trim());
             
             alert("Owner Registration Successful! Please sign in to continue.");
-            window.location.href = '../sign_in_page/Signin_index.html'; 
+            window.location.href = '../sign_in_page/sign_in_index.html'; 
         }
     } 
     // 2. USER SIGNUP FLOW 
