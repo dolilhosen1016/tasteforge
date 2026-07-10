@@ -14,7 +14,7 @@
    
    - **user_signin_index.html** (User Sign In)
      - Email and password login for users
-     - Links to: `sign_up_page/User_index.html`, Home, `forgot_password/Forgot_index.html`
+    - Links to: `sign_up_page/User_index.html`, Home, `forgot_password/Forgot_index.html`
    
    - **owner_signin_index.html** (Owner Sign In)
      - Email and password login for restaurant owners
