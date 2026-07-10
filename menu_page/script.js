@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!isLoggedIn) {
                 alert("Please Sign In to proceed to checkout!");
-                window.location.href = '../sign_in_page/signin_index.html';
+                window.location.href = '../sign_in_page/sign_in_index.html';
                 return; 
             }
             
