@@ -62,7 +62,7 @@ window.handleSignup = function(event) {
             localStorage.setItem('tasteForgeOwnerPassword', passwordInput.value.trim());
             
             alert("Owner Registration Successful! Please sign in to continue.");
-            window.location.href = '../sign_in_page/sign_in_index.html'; 
+            window.location.href="../sign_in_page/sign_in_index.html?tab=owner"; 
         }
     } 
     // 2. USER SIGNUP FLOW 
@@ -73,7 +73,7 @@ window.handleSignup = function(event) {
             localStorage.setItem('tasteForgeUserPassword', passwordInput.value.trim());
             
             alert("User Registration Successful! Please sign in to continue.");
-            window.location.href = '../sign_in_page/sign_in_index.html'; 
+            window.location.href="../sign_in_page/sign_in_index.html?tab=user"; 
         }
     }
 };
