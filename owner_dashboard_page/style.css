@@ -1,18 +1,58 @@
 :root {
     --bg-dark: #0a0a0a;
-    --bg-card: #121212;
-    --bg-panel: #1a1a1a;
-    --border-color: #2a2a2a;
-    --accent: #c8fb2e;
+    /* গ্লাস-মরফিজম প্যানেল ব্যাকগ্রাউন্ড */
+    --bg-card: rgba(18, 18, 18, 0.4); 
+    --bg-panel: rgba(20, 20, 20, 0.45); 
+    --border-color: rgba(255, 255, 255, 0.1);
+    /* ব্যাকগ্রাউন্ডের সাথে ম্যাচ করে প্রিমিয়াম গোল্ডেন কালার */
+    --accent: #f5b041; 
     --text-main: #ffffff;
-    --text-muted: #8e8e93;
+    --text-muted: #a0a0a0;
     --status-pending: #ffb142;
     --status-completed: #2ed573;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-body { display: flex; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; }
+body { 
+    display: flex; 
+    color: var(--text-main); 
+    min-height: 100vh; 
+    background-image: url("owner_dashboard_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    z-index: 1;
+}
+
+/* ব্যাকগ্রাউন্ডের ওপর একটা ডার্ক ওভারলে, যাতে টেক্সট ক্লিয়ার বোঝা যায় */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.65); 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+/* Sidebar Glass Effect */
+.sidebar {
+    width: 260px; background: var(--bg-card); 
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid var(--border-color);
+    padding: 30px 20px; display: flex; flex-direction: column; position: fixed; height: 100vh;
+}
+
+/* Cards & Tables Glass Effect */
+.dash-card, .table-container, .admin-menu-card, .profile-dropdown {
+    background: var(--bg-panel); 
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
 
 /* Sidebar */
 .sidebar {

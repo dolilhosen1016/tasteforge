@@ -23,9 +23,12 @@ window.switchTab = function(tabId) {
     const signupLink = document.getElementById('signupLink');
     if (signupLink) {
         if (tabId === 'user') {
-                signupLink.href = '../sign_up_page/User_index.html';
+                signupLink.href = '../sign_up_page/user_index.html';
         } else if (tabId === 'owner') {
-                signupLink.href = '../sign_up_page/Owner_index.html';
+                signupLink.href = '../sign_up_page/owner_index.html';
+        } else if (tabId === 'chef') {
+                // 🔥 NEW: Chef Sign Up Routing
+                signupLink.href = '../sign_up_page/chef_index.html';
         }
     }
 };
@@ -76,15 +79,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Fetch Owner Data
                 const savedOwnerEmail = localStorage.getItem('tasteForgeOwnerEmail');
                 const savedOwnerPassword = localStorage.getItem('tasteForgeOwnerPassword');
+
+                // 🔥 NEW: Fetch Chef Data 🔥
+                const savedChefEmail = localStorage.getItem('tasteForgeChefEmail');
+                const savedChefPassword = localStorage.getItem('tasteForgeChefPassword');
                 
                 // Fetch User Data
                 const savedUserEmail = localStorage.getItem('tasteForgeUserEmail');
                 const savedUserPassword = localStorage.getItem('tasteForgeUserPassword');
                 
-                // 🔥 ADMIN VS USER ROUTING LOGIC 🔥
+                // 🔥 ADMIN VS CHEF VS USER ROUTING LOGIC 🔥
                 if (inputEmail === savedOwnerEmail && inputPassword === savedOwnerPassword) {
                         window.location.href = '../owner_dashboard_page/index.html';
                 } 
+                else if (inputEmail === savedChefEmail && inputPassword === savedChefPassword) {
+                        // 🔥 NEW: Chef Dashboard Routing
+                        window.location.href = '../chef_dashboard_page/index.html';
+                }
                 else if (inputEmail === savedUserEmail && inputPassword === savedUserPassword) {
                         window.location.href = '../dashboard_page/index.html';
                 } 

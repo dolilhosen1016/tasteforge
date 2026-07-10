@@ -35,20 +35,22 @@ function togglePassword() {
     }
 }
 
+
 // =========================================
-// ✅ SIGN UP LOGIC (100% Bug Free Version)
+// ✅ SIGN UP LOGIC (Updated with Chef Flow)
 // =========================================
 window.handleSignup = function(event) {
     event.preventDefault(); 
     
     const form = event.target;
     
-    // 🔥 FIXED: একদম স্পেসিফিক placeholder দিয়ে ডাটা ধরা হয়েছে
     const nameInput = form.querySelector('input[placeholder="Full Name"]');
     const emailInput = form.querySelector('input[placeholder="Email Address"]');
     const passwordInput = form.querySelector('input[placeholder="Password"]');
     
     const secretKeyInput = form.querySelector('input[placeholder="Secret Access Key"]');
+    // 🔥 NEW: Chef Key Element
+    const kitchenKeyInput = form.querySelector('input[placeholder="Kitchen Access Key"]');
     
     // 1. OWNER SIGNUP FLOW 
     if (secretKeyInput) {
@@ -65,7 +67,22 @@ window.handleSignup = function(event) {
             window.location.href="../sign_in_page/sign_in_index.html?tab=owner"; 
         }
     } 
-    // 2. USER SIGNUP FLOW 
+    // 🔥 2. CHEF SIGNUP FLOW (NEW) 🔥
+    else if (kitchenKeyInput) {
+        if (kitchenKeyInput.value !== "TF_CHEF_2026") {
+            alert("❌ Unauthorized Access! Invalid Kitchen Access Key.");
+            return;
+        }
+        if (nameInput && emailInput && passwordInput) {
+            localStorage.setItem('tasteForgeChefName', nameInput.value.trim());
+            localStorage.setItem('tasteForgeChefEmail', emailInput.value.trim());
+            localStorage.setItem('tasteForgeChefPassword', passwordInput.value.trim());
+            
+            alert("Chef Registration Successful! Please sign in to continue.");
+            window.location.href="../sign_in_page/sign_in_index.html?tab=chef"; 
+        }
+    }
+    // 3. USER SIGNUP FLOW 
     else {
         if (nameInput && emailInput && passwordInput) {
             localStorage.setItem('tasteForgeUserName', nameInput.value.trim());

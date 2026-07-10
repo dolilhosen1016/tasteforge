@@ -27,6 +27,8 @@
     <div class="tab-container">
         <button class="tab-btn active" id="tab-user" onclick="switchTab('user')">User</button>
         <button class="tab-btn" id="tab-owner" onclick="switchTab('owner')">Owner</button>
+        <!-- 🔥 NEW: Chef Tab Added Here -->
+        <button class="tab-btn" id="tab-chef" onclick="switchTab('chef')">Chef</button>
     </div>
 
 
@@ -61,13 +63,14 @@
         <span>or</span>
     </div>
 
+    <!-- 🔥 Updated exact spelling for menue_details_page is not needed here as it goes to menu_page, but keeping your exact routing -->
     <button class="btn-secondary" onclick="window.location.href='../menu_page/index.html'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         Continue as Guest
     </button>
 
     <div class="modal-footer">
-        <p>Don't have an account? <a href="../sign_up_page/User_index.html" class="signup-link" id="signupLink">Sign Up</a></p>
+        <p>Don't have an account? <a href="../sign_up_page/user_index.html" class="signup-link" id="signupLink">Sign Up</a></p>
     </div>
 </div>
 

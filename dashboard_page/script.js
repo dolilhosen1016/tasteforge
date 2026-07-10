@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadSavedBuildsDashboard();
 
-    // 3. DYNAMIC LOYALTY POINTS & ORDER TRACKING
+    // 3. DYNAMIC LOYALTY POINTS & ORDER TRACKING (🔥 LIVE SYNC UPDATED)
     const orderListContainer = document.getElementById('orderListContainer');
     const orderViewAllBtn = document.getElementById('orderViewAllBtn');
     const totalOrdersCount = document.getElementById('totalOrdersCount');
@@ -68,17 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pointsProgressFill = document.getElementById('pointsProgressFill');
     const nextRewardText = document.getElementById('nextRewardText');
     
-    let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
-    
-    // 🔥 FIXED: ইউজার ড্যাশবোর্ডে অর্ডার রেন্ডার করার জন্য নতুন ফাংশন
     window.renderOrderHistory = function(showAll = false) {
         if (!orderListContainer) return;
         
-        // শুধু বর্তমান লগ-ইন করা ইউজারের অর্ডার ফিল্টার করা হলো
+        let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
         let myOrders = orderHistory.filter(order => order.customerEmail === storedEmail);
-
-        // স্ট্যাটাস আপডেট
-        // 1. Optional chaining/fallback prevents "Cannot read properties of undefined"
+        
         let totalItemsCrafted = myOrders?.length || 0; 
         let pointsPerMeal = 20; 
         let currentPoints = totalItemsCrafted * pointsPerMeal;
@@ -88,10 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loyaltyPointsDisplay) loyaltyPointsDisplay.textContent = currentPoints;
 
         let progressPercentage = (currentPoints / rewardMilestoneTarget) * 100;
-
-        // 2. Math.min is a cleaner, more standard way to cap values at 100
         progressPercentage = Math.min(progressPercentage, 100);
-
         if (pointsProgressFill) pointsProgressFill.style.width = `${progressPercentage}%`;
         if (nextRewardText) nextRewardText.textContent = `Next Reward: ${rewardMilestoneTarget} pts`;
 
@@ -116,12 +108,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             recentOrders.forEach(order => {
+                // 🔥 Dynamic Status Badge Logic
+                let statusBadge = '';
+                const status = order.status || 'Pending';
+
+                if (status === 'Pending') {
+                    statusBadge = `<span class="badge" style="background: rgba(255, 177, 66, 0.1); color: #ffb142; border: 1px solid rgba(255, 177, 66, 0.3);"><i class="fa-solid fa-fire"></i> Cooking</span>`;
+                } else if (status === 'Prepared') {
+                    statusBadge = `<span class="badge" style="background: rgba(0, 210, 255, 0.1); color: #00d2ff; border: 1px solid rgba(0, 210, 255, 0.3);"><i class="fa-solid fa-bell-concierge"></i> Ready to Serve</span>`;
+                } else {
+                    statusBadge = `<span class="badge delivered" style="background: rgba(212, 247, 81, 0.1); color: var(--brand-color); border: 1px solid rgba(212, 247, 81, 0.3);"><i class="fa-solid fa-check"></i> Completed</span>`;
+                }
+
                 htmlContent += `
                     <div class="order-row dash-card">
                         <div class="order-id">${order.id || '#TFP' + Math.floor(1000 + Math.random() * 9000)}</div>
                         <div class="order-date">${order.date || 'Today'}</div>
                         <div class="order-amount">$${parseFloat(order.amount).toFixed(2)}</div>
-                        <div class="order-status"><span class="badge delivered">Completed</span></div>
+                        <div class="order-status">${statusBadge}</div>
                     </div>
                 `;
             });
@@ -130,13 +134,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     renderOrderHistory(false);
 
+    // 🔥 MAGIC REAL-TIME SYNC: Listens for changes in localStorage from other tabs!
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'tasteForgeOrders') {
+            const isOrdersTabActive = document.querySelector('.sidebar-nav .nav-item:nth-child(3)').classList.contains('active');
+            renderOrderHistory(isOrdersTabActive);
+        }
+    });
+
     // 4. ACTION DROPDOWNS
     const profileBtn = document.getElementById('profileBtn');
     const profileDropdown = document.getElementById('profileDropdown');
     const notificationBtn = document.getElementById('notificationBtn');
     const notificationDropdown = document.getElementById('notificationDropdown');
     const notiDot = document.getElementById('notiDot');
-    
+
     if (profileBtn && profileDropdown) {
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -164,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSettingsBtn = document.getElementById('closeSettingsBtn');
     const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-    
+
     if (settingsModal) {
         const openSettingsModal = (e) => {
             e.preventDefault();
@@ -191,13 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRewardsBtn = document.getElementById('closeRewardsBtn');
     const modalRewardsPoints = document.getElementById('modalRewardsPoints');
     const rewardClaimButtons = document.querySelectorAll('.btn-claim-reward');
-    
+
     if (sidebarRewardsBtn && rewardsModal) {
         sidebarRewardsBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            // Recalculate points
+            let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
             let currentPoints = orderHistory.filter(o => o.customerEmail === storedEmail).length * 20;
             if (modalRewardsPoints) modalRewardsPoints.textContent = `${currentPoints} PTS`;
 
@@ -239,16 +251,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. LOAD SAVED BUILDS LOGIC
     const userSavedBuildsContainer = document.getElementById('savedBuildsContainer');
+
     function loadUserSavedBuilds() {
         if (!userSavedBuildsContainer) return;
 
         let savedBuilds = JSON.parse(localStorage.getItem('tasteForgeSavedBuilds')) || [];
+
         if (savedBuilds.length === 0) {
             userSavedBuildsContainer.innerHTML = `<p style="color: #8e8e93; font-size: 1rem; grid-column: 1 / -1;">You haven't saved any custom builds yet.</p>`;
             return;
         }
 
         userSavedBuildsContainer.innerHTML = '';
+
         savedBuilds.forEach((build, index) => {
             userSavedBuildsContainer.innerHTML += `
                 <div class="dash-card" style="background: #1c1c1e; padding: 20px; border-radius: 16px; border: 1px solid #2a2a2a;">
@@ -287,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. LEFT SIDEBAR TAB LOGIC
     const tabDashBtn = document.querySelector('.sidebar-nav .nav-item:first-child');
-    const tabOrdersBtn = document.querySelector('.sidebar-nav .nav-item:nth-child(3)'); 
+    const tabOrdersBtn = document.querySelector('.sidebar-nav .nav-item:nth-child(3)');
     const tabSavedBtn = document.getElementById('sidebarSavedBtn');
     
     const sectionOverview = document.querySelector('.overview-cards');
@@ -313,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(sectionOverview) sectionOverview.style.display = 'none'; 
             if(sectionOrders) sectionOrders.style.display = '';
             if(sectionSavedBuilds) sectionSavedBuilds.style.display = 'none';
-            renderOrderHistory(true); 
+            renderOrderHistory(true);
         }
         else if (tabName === 'saved') {
             if(tabSavedBtn) tabSavedBtn.classList.add('active');
@@ -327,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabDashBtn) tabDashBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('dashboard'); };
     if (tabOrdersBtn) tabOrdersBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('orders'); };
     if (tabSavedBtn) tabSavedBtn.onclick = (e) => { e.preventDefault(); switchDashboardTab('saved'); };
-    
+
     if (orderViewAllBtn) {
         orderViewAllBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -337,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 9. SECURE LOGOUT LOGIC (SNIPER MODE)
     const logoutButtons = document.querySelectorAll('.logout-btn, .logout');
+
     if (logoutButtons.length > 0) {
         logoutButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {

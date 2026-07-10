@@ -11,12 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminCustomerList = document.getElementById('adminCustomerList');
     const headerNotiBadge = document.getElementById('headerNotiBadge');
 
-    // 1. LOAD AND RENDER ORDERS & CUSTOMERS (🔥 FIXED)
+    // ==============================================================
+    // 1. LOAD AND RENDER ORDERS & CUSTOMERS (🔥 SYNCED WITH CHEF)
+    // ==============================================================
     window.loadAdminOrders = function() {
         let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
         
         let totalRev = 0;
-        let pendingCount = 0;
+        let activeOrdersCount = 0;
         let htmlOrders = '';
         let htmlCustomers = '';
         
@@ -32,12 +34,25 @@ document.addEventListener('DOMContentLoaded', () => {
             totalRev += amount;
             
             const status = order.status || 'Pending';
-            if (status === 'Pending') pendingCount++;
+            if (status === 'Pending' || status === 'Prepared') activeOrdersCount++;
 
-            const statusClass = status === 'Pending' ? 'pending' : 'completed';
-            const actionBtn = status === 'Pending' 
-                ? `<button class="action-btn" onclick="markAsComplete('${order.id}')">Mark Complete</button>`
-                : `<button class="action-btn" disabled><i class="fa-solid fa-check"></i> Done</button>`;
+            // 🔥 Dynamic Status Badge and Action Buttons Logic
+            let statusBadge = '';
+            let actionBtn = '';
+
+            if (status === 'Pending') {
+                // Chef is cooking, Owner cannot complete it yet
+                statusBadge = `<span class="status-badge" style="background: rgba(255, 177, 66, 0.1); color: #ffb142; border: 1px solid #ffb142;"><i class="fa-solid fa-fire"></i> Cooking</span>`;
+                actionBtn = `<button class="action-btn" disabled style="background: #333; color: #888; cursor: not-allowed;"><i class="fa-solid fa-hourglass-half"></i> Waiting for Chef</button>`;
+            } else if (status === 'Prepared') {
+                // Chef is done, Owner can now Complete & Cash Out
+                statusBadge = `<span class="status-badge" style="background: rgba(0, 210, 255, 0.1); color: #00d2ff; border: 1px solid #00d2ff;"><i class="fa-solid fa-bell-concierge"></i> Ready to Serve</span>`;
+                actionBtn = `<button class="action-btn" onclick="markAsComplete('${order.id}')" style="background: var(--accent); color: #000;"><i class="fa-solid fa-check-double"></i> Complete & Cash</button>`;
+            } else {
+                // Already completed
+                statusBadge = `<span class="status-badge completed"><i class="fa-solid fa-check"></i> Completed</span>`;
+                actionBtn = `<button class="action-btn" disabled style="background: rgba(46, 213, 115, 0.2); color: var(--status-completed);"><i class="fa-solid fa-receipt"></i> Paid</button>`;
+            }
 
             htmlOrders += `
                 <tr>
@@ -45,12 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${order.date}</td>
                     <td>${order.name}</td>
                     <td style="color: var(--accent); font-weight: 600;">$${amount.toFixed(2)}</td>
-                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>${statusBadge}</td>
                     <td>${actionBtn}</td>
                 </tr>
             `;
             
-            // 🔥 FIXED: সরাসরি অর্ডার থেকে নাম নেওয়া হচ্ছে, ভুল করে বর্তমান ইউজারের নাম নেবে না
             const custName = order.customerName || 'Guest Customer';
             const custEmail = order.customerEmail || 'guest@tasteforge.com';
             
@@ -67,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
         adminOrderList.innerHTML = htmlOrders;
         if(adminCustomerList) adminCustomerList.innerHTML = htmlCustomers;
         
-        updateStats(totalRev, orderHistory.length, pendingCount);
+        updateStats(totalRev, orderHistory.length, activeOrdersCount);
     };
-    
+
     function updateStats(revenue, total, pending) {
         if(totalRevenueEl) totalRevenueEl.innerText = `$${revenue.toFixed(2)}`;
         if(totalOrdersEl) totalOrdersEl.innerText = total;
@@ -85,7 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ==============================================================
     // 2. MARK ORDER AS COMPLETE
+    // ==============================================================
     window.markAsComplete = function(orderId) {
         let orderHistory = JSON.parse(localStorage.getItem('tasteForgeOrders')) || [];
         let updated = false;
@@ -96,38 +112,56 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return order;
         });
+
         if (updated) {
             localStorage.setItem('tasteForgeOrders', JSON.stringify(orderHistory));
             loadAdminOrders();
         }
     };
 
-    // 3. LOAD MENU ITEMS FROM JSON
+    // ==============================================================
+    // 3. LOAD MENU ITEMS FROM JSON (USING data.json)
+    // ==============================================================
     async function loadAdminMenu() {
         const adminMenuList = document.getElementById('adminMenuList');
         if(!adminMenuList) return;
         try {
+            // 🔥 Using data.json exactly as you requested
             const response = await fetch('../menu_page/data.json');
             if(!response.ok) throw new Error("JSON Fetch Failed");
             const data = await response.json();
             
             adminMenuList.innerHTML = '';
             data.forEach(item => {
+                // Magic Image Fixer
+                let imgData = item.image || item.img || item.picture || item.pic || item.imageUrl;
+                let imageSrc = '../sign_up_page/TasteForge_Logo.png'; 
+                if (imgData) {
+                    if (imgData.startsWith('http') || imgData.startsWith('../')) {
+                        imageSrc = imgData;
+                    } else {
+                        imageSrc = `../menu_page/${imgData}`;
+                    }
+                }
+
                 adminMenuList.innerHTML += `
                     <div class="admin-menu-card">
-                        <img src="${item.imageUrl}" alt="${item.name}">
-                        <h4>${item.name}</h4>
-                        <p>$${item.price.toFixed(2)}</p>
+                        <img src="${imageSrc}" alt="${item.name}">
+                        <h4>${item.name || 'Unknown Item'}</h4>
+                        <p style="color: var(--accent);">$${parseFloat(item.price || 0).toFixed(2)}</p>
                         <button onclick="alert('Edit feature coming soon!')">Edit Item</button>
                     </div>
                 `;
             });
         } catch(err) {
-            adminMenuList.innerHTML = `<p class="empty-msg">Could not load menu data. Ensure local server is running.</p>`;
+            console.error(err);
+            adminMenuList.innerHTML = `<p class="empty-msg" style="grid-column: 1 / -1;">Could not load menu data. Ensure your JSON file path is correct.</p>`;
         }
     }
 
+    // ==============================================================
     // 4. SIDEBAR TAB SWITCHING LOGIC
+    // ==============================================================
     const tabs = {
         'tabOverview': ['overviewSection'],
         'tabOrders': ['ordersSection'],
@@ -135,26 +169,32 @@ document.addEventListener('DOMContentLoaded', () => {
         'tabCustomers': ['customersSection'],
         'tabSettings': ['settingsSection']
     };
+
     function switchAdminTab(activeTabId) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         const allSections = ['overviewSection', 'ordersSection', 'menuSection', 'customersSection', 'settingsSection'];
         allSections.forEach(sec => {
             if(document.getElementById(sec)) document.getElementById(sec).style.display = 'none';
         });
+
         document.getElementById(activeTabId).classList.add('active');
         tabs[activeTabId].forEach(sec => {
             if (document.getElementById(sec)) {
                 document.getElementById(sec).style.display = sec === 'overviewSection' ? 'grid' : 'block';
             }
         });
+
         if(activeTabId === 'tabMenu') loadAdminMenu();
     }
+    
     Object.keys(tabs).forEach(tabId => {
         const btn = document.getElementById(tabId);
         if (btn) btn.addEventListener('click', (e) => { e.preventDefault(); switchAdminTab(tabId); });
     });
-    
+
+    // ==============================================================
     // 5. HEADER NOTIFICATION CLICK
+    // ==============================================================
     const headerNotiBtn = document.getElementById('headerNotiBtn');
     if(headerNotiBtn) {
         headerNotiBtn.addEventListener('click', () => {
@@ -162,7 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==============================================================
     // 6. ADMIN LOGOUT LOGIC
+    // ==============================================================
     const adminLogout = document.getElementById('adminLogout');
     if (adminLogout) {
         adminLogout.addEventListener('click', (e) => {
@@ -179,28 +221,30 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAdminOrders();
     switchAdminTab('tabOverview');
     
+    // ==============================================================
     // 7. PROFILE DROPDOWN LOGIC
+    // ==============================================================
     const adminProfileBtn = document.getElementById('adminProfileBtn');
     const adminProfileDropdown = document.getElementById('adminProfileDropdown');
     const dropdownAdminName = document.getElementById('dropdownAdminName');
     const dropdownAdminEmail = document.getElementById('dropdownAdminEmail');
     const dropdownSettingsBtn = document.getElementById('dropdownSettingsBtn');
     const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
-    
+
     if (adminProfileBtn && adminProfileDropdown) {
         if (dropdownAdminName) dropdownAdminName.innerText = storedName;
         const storedEmail = localStorage.getItem('tasteForgeOwnerEmail') || 'owner@tasteforge.com';
         if (dropdownAdminEmail) dropdownAdminEmail.innerText = storedEmail;
-        
+
         adminProfileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             adminProfileDropdown.style.display = adminProfileDropdown.style.display === 'none' ? 'block' : 'none';
         });
-        
+
         document.addEventListener('click', () => {
             adminProfileDropdown.style.display = 'none';
         });
-        
+
         if (dropdownSettingsBtn) {
             dropdownSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();

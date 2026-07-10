@@ -42,6 +42,10 @@ body.owner-theme {
     background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('Owner_Background.png');
 }
 
+body.chef-theme {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('Chef_Background.png'); /* তোমার পছন্দমতো শেফের একটা ছবি এই নামে সেভ করে নিও */
+}
+
 /* Glassmorphism Modal Container */
 .auth-modal {
     background-color: var(--modal-bg);
